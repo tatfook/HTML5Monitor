@@ -1,33 +1,39 @@
 --[[
-	@author: Marx Wolf
-	@time: 07.04.2016
-	This is my first try in lua.
-	Array-sort algorithm implementation in lua.
+@author: Marx Wolf
+@date: 07.04.2016
+@desc: This is my first try in lua.
+Array-sort algorithm implementation in lua.
+@usage:
+--------------------------
+NPL.load("(gl)scritp/ide/System/Algorithm/arraySort.lua");
+local arraySort = commonlib.gettable("System.Algorithm.arraySort");
+arraySort.swap(arr,i,j)
+--------------------------
 --]]
 
-if (not arraySort) then arraySort = {}; end
+local arraySort = commonlib.gettable("System.Algorithm.arraySort");
 
+local tostring = tostring;
+local select = select;
 
--- @param arr is the input array, i and j is the element index that need to be swaped
 -- swap the element at specified index of the input array
-local function swap(arr,i,j)
+-- @param arr,i,j: is the input array, i and j is the element index that need to be swaped
+function arraySort.swap(arr,i,j)
 	local temp = arr[i]
 	arr[i] = arr[j]
 	arr[j] = temp
 end
-arraySort.swap = swap
+local swap = arraySort.swap;
 
 -- @param arr is the input array
 local function selectSort(arr)
 	for i = 1,#arr-1 do 
 		local minIndex = i
 		for j = i+1,#arr do
-			if (arr[minIndex] > arr[j]) then
-				minIndex = j
-			end
+			minIndex = arr[minIndex] > arr[j] and j or minIndex;
 		end
 		if (arr[i] ~= arr[minIndex]) then
-			arraySort.swap(arr, i, minIndex)
+			swap(arr, i, minIndex);
 		end
 	end
 end
@@ -35,13 +41,14 @@ arraySort.selectSort = selectSort
 
 
 local function insertSort(arr)
+	local currentValue;
 	for i = 2,#arr do
 		currentValue = arr[i]
 		index = i
 		for j = i-1,1,-1 do
 			if (currentValue < arr[j]) then
-				arr[j+1] = arr[j]
-				index = j
+				arr[j+1] = arr[j];
+				index = j;
 			end
 		end
 		arr[index] = currentValue
@@ -53,7 +60,7 @@ local function bubbleSort(arr)
 	for i = 1,#arr do
 		for j = 1,(#arr-i) do
 			if (arr[j] > arr[j+1]) then
-				arraySort.swap(arr,j,j+1)
+				swap(arr,j,j+1)
 			end
 		end
 	end
@@ -62,8 +69,8 @@ arraySort.bubbleSort = bubbleSort
 
 -- reverse the input arrays
 local function reversed(arr)
-	for i = 1,#arr/2 do
-		arraySort.swap(arr,i,#arr+1-i)
+	for i = 1, #arr/2 do
+		swap(arr,i,#arr+1-i)
 	end
 end
 arraySort.reversed = reversed
@@ -77,17 +84,13 @@ function nowrapprint(...)
         write(v)
         if i~=n then write'\t' end
     end
-    write'\n'
+    write('\n');
 end
 
 -- print array in the same line with the input separetor such as "/t" or " " or ","
 function arrayprint(arr,sep)
-	local nowraparray = ""
-	for i = 1,#arr do
-		nowraparray = nowraparray .. arr[i] .. sep
-	end
-	arr = nowraparray
-	print(arr)
+	-- invarient string
+	print(table.concat(arr, sep));
 end
 
 
