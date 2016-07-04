@@ -91,13 +91,8 @@ function arrayprint(arr,sep)
 end
 
 
--------Test for the upper functions
-arr = {11,22,433,555}
-arr1 = {'abv','cad',17}
-arrayprint(arr1," ")
-for i = 1, #arr1 do
-	print(arr1[i])
-end
+-------Test for the upper functions--------------
+
 
 
 
