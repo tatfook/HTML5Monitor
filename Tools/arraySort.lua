@@ -26,7 +26,7 @@ end
 local swap = arraySort.swap;
 
 -- @param arr is the input array
-local function selectSort(arr)
+local function arraySort.selectSort(arr)
 	for i = 1,#arr-1 do 
 		local minIndex = i
 		for j = i+1,#arr do
@@ -37,10 +37,10 @@ local function selectSort(arr)
 		end
 	end
 end
-arraySort.selectSort = selectSort
 
 
-local function insertSort(arr)
+
+local function arraySort.insertSort(arr)
 	local currentValue;
 	for i = 2,#arr do
 		currentValue = arr[i]
@@ -54,9 +54,8 @@ local function insertSort(arr)
 		arr[index] = currentValue
 	end
 end
-arraySort.insertSort = insertSort
 
-local function bubbleSort(arr)
+local function arraySort.bubbleSort(arr)
 	for i = 1,#arr do
 		for j = 1,(#arr-i) do
 			if (arr[j] > arr[j+1]) then
@@ -65,15 +64,15 @@ local function bubbleSort(arr)
 		end
 	end
 end
-arraySort.bubbleSort = bubbleSort
+
 
 -- reverse the input arrays
-local function reversed(arr)
+local function arraySort.reversed(arr)
 	for i = 1, #arr/2 do
 		swap(arr,i,#arr+1-i)
 	end
 end
-arraySort.reversed = reversed
+
 
 -- @param variable input parameters, with separetor "\t" and a newline at last  
 function nowrapprint(...)
