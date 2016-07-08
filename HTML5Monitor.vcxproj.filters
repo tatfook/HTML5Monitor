@@ -4,7 +4,7 @@
     <Filter Include="Mod">
       <UniqueIdentifier>{c1e3f7e3-ff8c-4565-929e-e3a423cadcbe}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Mod\FirstApp">
+    <Filter Include="Mod\HTML5Monitor">
       <UniqueIdentifier>{6f496cf8-66e3-426f-a6a6-59a51e878ef4}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
@@ -13,10 +13,10 @@
     <None Include="InstallPackages.bat" />
     <None Include="Run.bat" />
     <None Include="Mod\HTML5Monitor\Helper.lua">
-      <Filter>Mod\FirstApp</Filter>
+      <Filter>Mod\HTML5Monitor</Filter>
     </None>
     <None Include="Mod\HTML5Monitor\main.lua">
-      <Filter>Mod\FirstApp</Filter>
+      <Filter>Mod\HTML5Monitor</Filter>
     </None>
     <None Include="script\apps\WebServer\admin\wp-content\pages\HTML5Monitor.page" />
   </ItemGroup>

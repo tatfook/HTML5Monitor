@@ -9,7 +9,7 @@ NPL.load("(gl)Mod/FirstApp/main.lua");
 local FirstApp = commonlib.gettable("Mod.FirstApp");
 ------------------------------------------------------------
 ]]
-NPL.load("(gl)Mod/FirstApp/Helper.lua");
+NPL.load("(gl)Mod/HTML5Monitor/Helper.lua");
 local Helper = commonlib.gettable("Mod.FirstApp.Helper");
 local FirstApp = commonlib.inherit(commonlib.gettable("Mod.ModBase"),commonlib.gettable("Mod.FirstApp"));
 
