@@ -5,44 +5,44 @@ Date:
 Desc: 
 use the lib:
 ------------------------------------------------------------
-NPL.load("(gl)Mod/FirstApp/main.lua");
-local FirstApp = commonlib.gettable("Mod.FirstApp");
+NPL.load("(gl)Mod/HTML5Monitor/main.lua");
+local FirstApp = commonlib.gettable("Mod.HTML5Monitor");
 ------------------------------------------------------------
 ]]
 NPL.load("(gl)Mod/HTML5Monitor/Helper.lua");
-local Helper = commonlib.gettable("Mod.FirstApp.Helper");
-local FirstApp = commonlib.inherit(commonlib.gettable("Mod.ModBase"),commonlib.gettable("Mod.FirstApp"));
+local Helper = commonlib.gettable("Mod.HTML5Monitor.Helper");
+local HTML5Monitor = commonlib.inherit(commonlib.gettable("Mod.ModBase"),commonlib.gettable("Mod.HTML5Monitor"));
 
-function FirstApp:ctor()
+function HTML5Monitor:ctor()
 	
 end
 
 -- virtual function get mod name
-function FirstApp:GetName()
-	return "FirstApp"
+function HTML5Monitor:GetName()
+	return "HTML5Monitor"
 end
 
 -- virtual function get mod description 
 
-function FirstApp:GetDesc()
-	return "FirstApp is a plugin in paracraft"
+function HTML5Monitor:GetDesc()
+	return "HTML5Monitor is a plugin in paracraft"
 end
 
-function FirstApp:init()
-	LOG.std(nil, "info", "FirstApp", "plugin initialized");
+function HTML5Monitor:init()
+	LOG.std(nil, "info", "HTML5Monitor", "plugin initialized");
 end
 
-function FirstApp:OnLogin()
+function HTML5Monitor:OnLogin()
 end
 -- called when a new world is loaded. 
 
-function FirstApp:OnWorldLoad() 
+function HTML5Monitor:OnWorldLoad() 
     Helper:Hello();
 end
 
 -- called when a world is unloaded. 
-function FirstApp:OnLeaveWorld()
+function HTML5Monitor:OnLeaveWorld()
 end
 
-function FirstApp:OnDestroy()
+function HTML5Monitor:OnDestroy()
 end
