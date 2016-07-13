@@ -15,9 +15,15 @@
 			<input type="text" class="form-control" id="serverIP" placeholder="Please enter server IP">
 		</div>
 		<button type="submit" class="btn btn-primary" id="connectServer">Connect Server</button>
+		<button type="submit" class="btn btn-primary" id="disconnectServer">Disconnect</button>
 		<div class="form-group">
 			<input type="text" class="form-control " id="refreshRate" placeholder="refresh rate: s/frame">
 		</div>
 		<button type="submit" class="btn btn-primary" id="refreshRateConfirm">Confirm</button>
+		<button type="submit" class="btn btn-primary" id="refreshRatePause">Pause</button>
 	</form>
+</div>
+
+<div>
+
 </div>
