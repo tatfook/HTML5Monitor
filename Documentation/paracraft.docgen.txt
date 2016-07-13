@@ -51,26 +51,5 @@ script/ide/System/Scene/Cameras/AutoCamera.lua
 script/ide/System/Scene/Cameras/Cameras.lua
 
 
-------------------------------------------------------
--- web related 
-------------------------------------------------------
-script/apps/WebServer/mem_cache.lua
-script/apps/WebServer/minetypes.lua
-script/apps/WebServer/npl_common_handlers.lua
-script/apps/WebServer/npl_file_handler.lua
-script/apps/WebServer/npl_http.lua
-script/apps/WebServer/npl_page_env.lua
-script/apps/WebServer/npl_page_handler.lua
-script/apps/WebServer/npl_page_manager.lua
-script/apps/WebServer/npl_page_parser.lua
-script/apps/WebServer/npl_request.lua
-script/apps/WebServer/npl_response.lua
-script/apps/WebServer/npl_script_handler.lua
-script/apps/WebServer/npl_util.lua
-script/apps/WebServer/rules.lua
-script/apps/WebServer/shell_loop_webserver.lua
-script/apps/WebServer/WebServer.lua
-
-
 
 
