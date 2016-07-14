@@ -107,8 +107,10 @@ function DocGen:Parse(filename)
 				i, j, singleContent = string.find(text, "<%?npl(.-)%?>",j+1);
 				if j == nil then break end
 				table.insert(contenttable,singleContent);
+			end
 			content = table.concat(contenttable,"\n")
 			local header, body = string.match(content, "^%s*%-%-%[%[(.-\r?\n)%]%](.*)$");
+		end
 		-----------revised stop here 
 		if(body) then
 			self.functions = self:ParseFunctions(body);
