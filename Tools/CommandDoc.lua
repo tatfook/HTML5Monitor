@@ -110,7 +110,8 @@ function DocGen:Parse(filename)
 			end
 			content = table.concat(contenttable,"\n")
 			local header, body = string.match(content, "^%s*%-%-%[%[(.-\r?\n)%]%](.*)$");
-		end
+			LOG.std(nil, "info", "DocGen", "parsing page source file %s", filename);
+		else end
 		-----------revised stop here 
 		if(body) then
 			self.functions = self:ParseFunctions(body);
