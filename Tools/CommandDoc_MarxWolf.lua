@@ -108,9 +108,9 @@ function DocGen:Parse(filename)
 				if j == nil then break end
 				table.insert(contenttable,singleContent);
 			end
-			content = table.concat(contenttable,"\n")
+			content = table.concat(contenttable)
 			local header, body = string.match(content, "^%s*%-%-%[%[(.-\r?\n)%]%](.*)$");
-			LOG.std(nil, "info", "DocGen", "parsing page source file %s", filename);
+			LOG.std(nil, "info", "DocGen", "marxwolf parsing page source file %s", filename);
 		else end
 		-----------revised stop here 
 		if(body) then

@@ -200,6 +200,7 @@ script/apps/WebServer/WebServer.lua
 -----------------------------------------------
 -- page file
 -----------------------------------------------
+
 script/apps/WebServer/admin/index.page
 script/apps/WebServer/admin/wp-config.page
 script/apps/WebServer/admin/wp-load.page
