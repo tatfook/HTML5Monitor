@@ -94,12 +94,14 @@ end
 function DocGen:Parse(filename)
 	local file = ParaIO.open(filename, "r");
 	if(file:IsValid()) then
-		LOG.std(nil, "info", "DocGen", "parsing npl source file %s", filename);
 		local text = file:GetText();
 		-----------revised here
-		if(string.match(filename,".lua")) then
-			local header, body = string.match(text, "^%s*%-%-%[%[(.-\r?\n)%]%](.*)$");
-		elseif(string.match(filename,".page")) then
+		local header;
+		local body;
+		if(string.match(filename,"%.lua")) then
+			header, body = string.match(text, "^%s*%-%-%[%[(.-\r?\n)%]%](.*)$");
+			LOG.std(nil, "info", "DocGen", "parsing npl source file %s", filename);
+		elseif(string.match(filename,"%.page")) then
 			local contenttable = {}
 			local i = 0
 			local j = 0
@@ -108,8 +110,8 @@ function DocGen:Parse(filename)
 				if j == nil then break end
 				table.insert(contenttable,singleContent);
 			end
-			content = table.concat(contenttable)
-			local header, body = string.match(content, "^%s*%-%-%[%[(.-\r?\n)%]%](.*)$");
+			content = table.concat(contenttable,"\n")
+			header, body = string.match(content, "^%s*%-%-%[%[(.-\r?\n)%]%](.*)$");
 			LOG.std(nil, "info", "DocGen", "marxwolf parsing page source file %s", filename);
 		else end
 		-----------revised stop here 
