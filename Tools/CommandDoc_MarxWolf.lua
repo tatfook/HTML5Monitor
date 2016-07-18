@@ -98,10 +98,10 @@ function DocGen:Parse(filename)
 		-----------revised here
 		local header;
 		local body;
-		if(string.match(filename,"%.lua")) then
+		if(string.match(filename,"%.lua$")) then
 			header, body = string.match(text, "^%s*%-%-%[%[(.-\r?\n)%]%](.*)$");
 			LOG.std(nil, "info", "DocGen", "parsing npl source file %s", filename);
-		elseif(string.match(filename,"%.page")) then
+		elseif(string.match(filename,"%.page$")) then
 			local contenttable = {}
 			local i = 0
 			local j = 0
