@@ -18,6 +18,5 @@
     <None Include="Mod\HTML5Monitor\main.lua">
       <Filter>Mod\HTML5Monitor</Filter>
     </None>
-    <None Include="script\apps\WebServer\admin\wp-content\pages\HTML5Monitor.page" />
   </ItemGroup>
 </Project>
