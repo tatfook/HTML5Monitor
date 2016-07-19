@@ -1,0 +1,34 @@
+
+
+<script>
+  $(function(){
+    if(Page)
+      Page.ShowSideBar(false);
+  });
+  screenWidth = screen.availWidth;
+  //alert(screenWidth);
+  imageWidth = 300;
+  horizontalImageNum = Math.floor(screenWidth/imageWidth);
+
+  
+</script>
+
+
+<div align="center">
+	<form class="form-inline" role="form" method="get" action="">
+		<div class="form-group">
+			<input type="text" class="form-control" id="serverIP" name="serverIP" placeholder="Please enter server IP">
+		</div>
+		<button type="submit" class="btn btn-primary" id="connectServer" name="connectServer">Connect Server</button>
+		<button type="submit" class="btn btn-primary" id="disconnectServer" name="disconnectServer">Disconnect</button>
+		<div class="form-group">
+			<input type="text" class="form-control " id="refreshRate" name="refreshRate" placeholder="refresh rate: s/frame">
+		</div>
+		<button type="submit" class="btn btn-primary" id="refreshRateConfirm" name="refreshRateConfirm">Confirm</button>
+		<button type="submit" class="btn btn-primary" id="refreshRatePause" name="refreshRatePause">Pause</button>
+	</form>
+</div>
+
+<div>
+
+</div>
