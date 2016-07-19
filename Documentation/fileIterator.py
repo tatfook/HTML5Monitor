@@ -11,8 +11,8 @@ savefile = 'luafile.txt'
 
 
 def fileIterator(filerootdir, savefile):
+	f = open(savefile,'a')
 	for parent,dir,file in os.walk(filerootdir):
-		f = open(savefile,'a')
 		for filename in file:
 			if (filename.endswith(".lua")):
 				#filetotal = os.path.join(parent,filename)+"\n"
