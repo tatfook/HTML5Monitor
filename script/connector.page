@@ -1,0 +1,100 @@
+<?npl
+--[[
+Title: students' client connect teachers' server to help teacher monitor behavior in ParaCraft
+Author: marxwolfs@gmail.com
+Date: 2016/07/18
+Desc: To help teachers monitor students behavior in ParaCraft client in broswer
+]]
+local string = string;
+
+NPL.load("(gl)script/ide/System/Encoding/base64.lua");
+local Encoding = commonlib.gettable("System.Encoding");
+
+
+local server = request:get("server");
+local username = request:get("username");
+local localTime = os.date("%X");
+-- local localHost = 
+
+local function GetHost(host)
+	return host or "";
+end
+
+local function GetNid(nid)
+	return nid or "teacher";
+end
+
+local function GetUrl()
+	local url = "(gl)" .. GetNid() .. ":script/imageReceiver.lua"
+	return url
+end
+
+local function ConnectServer(userHost, userPort)
+	-- NPL.StartNetServer("192.168.0.152", 8099)
+	NPL.AddNPLRuntimeAddress({host = userHost, port = userPort, nid = GetNid()})
+end
+
+local function TakeScreenShot(imageName)
+	local imageName = imageName or username .. ".jpg" or "auto.jpg";
+	local imageFile = ParaMovie.TakeScreenShot(imageName);
+	return imageName;
+end	
+
+
+local function ImageOpen(imageFile)
+	local imageFile = imageFile or username .. ".jpg" or "auto.jpg";
+	local imageObj = ParaIO.open(imageFile, "r");
+	local imageSize = imageObj:GetFileSize()
+	local imageData = imageObj:GetText(0, -1);
+	imageObj:close();
+	return imageData, imageSize;
+end
+
+local function base64Encode(imageData)
+	local base64Data = Encoding.base64(imageData);
+	return base64Data;
+end
+
+local function activate()
+	if(server) then
+		local host = string.match(server, "(.*):");
+		local port = string.match(server, ":(.*)$");
+		ConnectServer(host, port);
+		local imageFile = TakeScreenShot();
+		if(imageFile) then
+			local imageData, imageSize = ImageOpen(imageFile);
+			local base64Data = base64Encode(imageData); 
+			local isConnected = NPL.activate(GetUrl(), {data=base64Data, fileSize=imageSize })
+			echo(isConnected);
+			echo(username);
+			echo(localTime);
+			echo(GetUrl());
+		end
+	else
+		return;
+	end
+end
+
+
+?>
+
+
+<script>
+  $(function(){
+    if(Page)
+      Page.ShowSideBar(false);
+  });
+</script>
+
+<div align="center">
+	<form class="form-inline" role="form" method="get" action="">
+		<div class="form-group">
+			<input type="text" class="form-control" id="server" name="server" placeholder="Please enter server IP">
+			<input type="text" class="form-control" id="username" name="username" placeholder="Please enter your name">
+		</div>
+		<button type="submit" class="btn btn-primary" id="connectServer">Connect Server</button>
+		
+	</form>
+</div>
+
+<?npl activate(); ?>
