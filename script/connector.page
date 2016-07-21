@@ -66,8 +66,7 @@ local function activate()
 			local base64Data = base64Encode(imageData); 
 			local isConnected = NPL.activate(GetUrl(), {data=base64Data, fileSize=imageSize })
 			echo(isConnected);
-			echo("     ")
-			echo(imageSize);
+
 			
 			
 		end
