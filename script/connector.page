@@ -66,9 +66,10 @@ local function activate()
 			local base64Data = base64Encode(imageData); 
 			local isConnected = NPL.activate(GetUrl(), {data=base64Data, fileSize=imageSize })
 			echo(isConnected);
-			echo(username);
-			echo(localTime);
-			echo(GetUrl());
+			echo("     ")
+			echo(imageSize);
+			
+			
 		end
 	else
 		return;
@@ -87,7 +88,7 @@ end
 </script>
 
 <div align="center">
-	<form class="form-inline" role="form" method="get" action="">
+	<form class="form-inline" role="form" method="post" action="">
 		<div class="form-group">
 			<input type="text" class="form-control" id="server" name="server" placeholder="Please enter server IP">
 			<input type="text" class="form-control" id="username" name="username" placeholder="Please enter your name">
