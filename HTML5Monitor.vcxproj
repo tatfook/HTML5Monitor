@@ -112,9 +112,19 @@
   <ItemGroup>
     <None Include=".gitignore" />
     <None Include="InstallPackages.bat" />
+    <None Include="Mod\HTML5Monitor\H5MonitorClient.lua" />
+    <None Include="Mod\HTML5Monitor\H5MonitorServer.lua" />
     <None Include="Mod\HTML5Monitor\Helper.lua" />
     <None Include="Mod\HTML5Monitor\main.lua" />
+    <None Include="README.md" />
     <None Include="Run.bat" />
+    <None Include="script\apps\WebServer\admin\wp-content\pages\H5MonitorClient.page" />
+    <None Include="script\apps\WebServer\admin\wp-content\pages\H5MonitorServer.page" />
+    <None Include="script\apps\WebServer\admin\wp-content\pages\h5monitor\app.js" />
+    <None Include="script\apps\WebServer\admin\wp-content\pages\h5monitor\controllers\h5MonitorClientController.js" />
+    <None Include="script\apps\WebServer\admin\wp-content\pages\h5monitor\controllers\h5MonitorServerController.js" />
+    <None Include="script\apps\WebServer\admin\wp-content\pages\h5monitor\templates\H5MonitorClientTemplate.html" />
+    <None Include="script\apps\WebServer\admin\wp-content\pages\h5monitor\templates\H5MonitorServerTemplate.html" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

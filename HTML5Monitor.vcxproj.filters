@@ -7,6 +7,33 @@
     <Filter Include="Mod\HTML5Monitor">
       <UniqueIdentifier>{6f496cf8-66e3-426f-a6a6-59a51e878ef4}</UniqueIdentifier>
     </Filter>
+    <Filter Include="script">
+      <UniqueIdentifier>{c5eda591-f653-4093-947a-05ab9c11192d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="script\apps">
+      <UniqueIdentifier>{8b42a295-409c-46a2-a21a-fdd4130c4386}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="script\apps\WebServer">
+      <UniqueIdentifier>{307c6d9c-bb0a-4ddc-b69d-1df4c3a80540}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="script\apps\WebServer\admin">
+      <UniqueIdentifier>{d5a38070-0173-4fc9-a24a-9cbe91e54596}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="script\apps\WebServer\admin\wp-content">
+      <UniqueIdentifier>{f872716e-339a-4445-8e0e-d70ced0dfe0c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="script\apps\WebServer\admin\wp-content\pages">
+      <UniqueIdentifier>{18905660-ff34-4fc0-8ee5-465ef6cad47f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="script\apps\WebServer\admin\wp-content\pages\h5monitor">
+      <UniqueIdentifier>{d4b92388-ec4e-4dfa-9611-9f8edc136cf6}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="script\apps\WebServer\admin\wp-content\pages\h5monitor\controllers">
+      <UniqueIdentifier>{db1bff28-f364-4475-8210-eb00bb9420d8}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="script\apps\WebServer\admin\wp-content\pages\h5monitor\templates">
+      <UniqueIdentifier>{24c7ea7b-2801-4173-a878-8ce7f00c8b73}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <None Include=".gitignore" />
@@ -18,5 +45,33 @@
     <None Include="Mod\HTML5Monitor\main.lua">
       <Filter>Mod\HTML5Monitor</Filter>
     </None>
+    <None Include="Mod\HTML5Monitor\H5MonitorClient.lua">
+      <Filter>Mod\HTML5Monitor</Filter>
+    </None>
+    <None Include="Mod\HTML5Monitor\H5MonitorServer.lua">
+      <Filter>Mod\HTML5Monitor</Filter>
+    </None>
+    <None Include="script\apps\WebServer\admin\wp-content\pages\H5MonitorClient.page">
+      <Filter>script\apps\WebServer\admin\wp-content\pages</Filter>
+    </None>
+    <None Include="script\apps\WebServer\admin\wp-content\pages\H5MonitorServer.page">
+      <Filter>script\apps\WebServer\admin\wp-content\pages</Filter>
+    </None>
+    <None Include="script\apps\WebServer\admin\wp-content\pages\h5monitor\app.js">
+      <Filter>script\apps\WebServer\admin\wp-content\pages\h5monitor</Filter>
+    </None>
+    <None Include="script\apps\WebServer\admin\wp-content\pages\h5monitor\controllers\h5MonitorClientController.js">
+      <Filter>script\apps\WebServer\admin\wp-content\pages\h5monitor\controllers</Filter>
+    </None>
+    <None Include="script\apps\WebServer\admin\wp-content\pages\h5monitor\controllers\h5MonitorServerController.js">
+      <Filter>script\apps\WebServer\admin\wp-content\pages\h5monitor\controllers</Filter>
+    </None>
+    <None Include="script\apps\WebServer\admin\wp-content\pages\h5monitor\templates\H5MonitorClientTemplate.html">
+      <Filter>script\apps\WebServer\admin\wp-content\pages\h5monitor\templates</Filter>
+    </None>
+    <None Include="script\apps\WebServer\admin\wp-content\pages\h5monitor\templates\H5MonitorServerTemplate.html">
+      <Filter>script\apps\WebServer\admin\wp-content\pages\h5monitor\templates</Filter>
+    </None>
+    <None Include="README.md" />
   </ItemGroup>
 </Project>

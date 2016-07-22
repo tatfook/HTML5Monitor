@@ -1,0 +1,26 @@
+<div class="row">
+    <span>width:</span>
+    <input type="text" id="img_width" value="32"/>
+    <span>height:</span>
+    <input type="text" id="img_height" value="32"/>
+    <button ng-click="doTakeScreenShot()" class="btn btn-primary">TakeScreenShot</button>
+</div>
+<div class="row">
+    <span>Ip:</span>
+    <input type="text" id="ip" value="127.0.0.1" />
+    <span>Port:</span>
+    <input type="text" id="port" value="60001" />
+    <button ng-click="doStart()" class="btn btn-success">Connect</button>
+    <button ng-click="doStop()" class="btn btn-primary">Disconnect</button>
+    <button ng-click="refreshMsg()" class="btn btn-primary">Refresh</button>
+</div>
+<div class="row">
+    <input type="text" id="txt" value="hello world" />
+    <button ng-click="doSend()" class="btn btn-primary">Send</button>
+</div>
+<div class="row" id="logWnd">
+    {{msgs}}
+</div>
+<div class="row" >
+    <img id="screen_shot_image" />
+</div>
