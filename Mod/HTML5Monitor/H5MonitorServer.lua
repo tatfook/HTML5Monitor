@@ -21,7 +21,7 @@ H5MonitorServer.Send({"hello world 111"});
 NPL.load("(gl)script/ide/commonlib.lua"); 
 local H5MonitorServer = commonlib.gettable("Mod.HTML5Monitor.H5MonitorServer");
 local rts_name = "h5monitor_worker";
-local nid = "h5monitorserver";
+local last_client_nid = "lastClientNid";
 local client_file = "Mod/HTML5Monitor/H5MonitorClient.lua";
 local server_file = "Mod/HTML5Monitor/H5MonitorServer.lua";
 H5MonitorServer.handle_msgs = nil;
@@ -31,12 +31,12 @@ function H5MonitorServer.AddPublicFiles()
 end
 function H5MonitorServer.Start(host,port)
     H5MonitorServer.AddPublicFiles();
-	host = host or "127.0.0.1";
-	port = port or "60001";
-	
-	host = tostring(host);
-	port = tostring(port);
-    NPL.StartNetServer(host, port);
+	--host = host or "127.0.0.1";
+	--port = port or "60001";
+	--
+	--host = tostring(host);
+	--port = tostring(port);
+    --NPL.StartNetServer(host, port);
 
 	--local worker = NPL.CreateRuntimeState(rts_name, 0);
 	--worker:Start();
@@ -48,7 +48,8 @@ function H5MonitorServer.Stop()
 
 end
 function H5MonitorServer.Send(msg)
-	local res = NPL.activate(string.format("(%s)%s:%s", "gl",nid,client_file), msg);
+	local nid = msg.nid or msg.tid or last_client_nid;
+	local res = NPL.activate(string.format("%s:%s", nid, client_file), msg);
 	LOG.std(nil, "info", "H5MonitorServer", "res:%s",tostring(res));
 	return res;
 end
@@ -59,13 +60,12 @@ end
 local function activate()
 	if(not msg.nid)then
 		LOG.std(nil, "info", "H5MonitorServer", "accept");
-		echo(msg);
-		NPL.accept(msg.tid, nid);
-	else
-		LOG.std(nil, "info", "H5MonitorServer", "got a message");
-		echo(msg);
-		H5MonitorServer.handle_msgs = msg;
+		NPL.accept(msg.tid, last_client_nid);
 	end
+	
+	LOG.std(nil, "info", "H5MonitorServer", "got a message");
+	echo(msg);
+	H5MonitorServer.handle_msgs = msg;
 end
 function H5MonitorServer.StartLocalWebServer(host,port)
 	NPL.load("(gl)script/apps/WebServer/WebServer.lua");

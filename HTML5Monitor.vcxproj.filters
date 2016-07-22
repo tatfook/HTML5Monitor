@@ -73,5 +73,8 @@
       <Filter>script\apps\WebServer\admin\wp-content\pages\h5monitor\templates</Filter>
     </None>
     <None Include="README.md" />
+    <None Include="StartServer.bat" />
+    <None Include="StartClient1.bat" />
+    <None Include="StartClient0.bat" />
   </ItemGroup>
 </Project>

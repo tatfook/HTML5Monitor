@@ -17,7 +17,7 @@ angular.module('H5Monitor_App', ['ngStorage'])
             var url = "ajax/H5MonitorClient?action=monitor_start&ip=" + ip + "&port=" + port;
             console.log(url);
             $http.get(url).then(function (response) {
-                //$scope.startTimer();
+                $scope.startTimer();
             });
         }
         $scope.doStop = function () {

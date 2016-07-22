@@ -125,6 +125,9 @@
     <None Include="script\apps\WebServer\admin\wp-content\pages\h5monitor\controllers\h5MonitorServerController.js" />
     <None Include="script\apps\WebServer\admin\wp-content\pages\h5monitor\templates\H5MonitorClientTemplate.html" />
     <None Include="script\apps\WebServer\admin\wp-content\pages\h5monitor\templates\H5MonitorServerTemplate.html" />
+    <None Include="StartClient0.bat" />
+    <None Include="StartClient1.bat" />
+    <None Include="StartServer.bat" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
