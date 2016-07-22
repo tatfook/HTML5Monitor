@@ -5,7 +5,7 @@ This is the NPL project to help teachers monitor the students activity in paracr
 [html5monitor on sketchboard](https://sketchboard.me/JzZsvxMgocVo#)
 
 # Start Server 
-'''
+```lua
 NPL.load("(gl)Mod/HTML5Monitor/H5MonitorServer.lua");
 local H5MonitorServer = commonlib.gettable("Mod.HTML5Monitor.H5MonitorServer");
 H5MonitorServer.StartLocalWebServer();
@@ -17,9 +17,9 @@ H5MonitorServer.Start();
 NPL.load("(gl)Mod/HTML5Monitor/H5MonitorServer.lua");
 local H5MonitorServer = commonlib.gettable("Mod.HTML5Monitor.H5MonitorServer");
 H5MonitorServer.Send({"hello world 111"});
-'''
+```
 # Start Client
-'''
+```lua
 NPL.load("(gl)Mod/HTML5Monitor/H5MonitorClient.lua");
 local H5MonitorClient = commonlib.gettable("Mod.HTML5Monitor.H5MonitorClient");
 H5MonitorClient.StartLocalWebServer();
@@ -31,5 +31,5 @@ H5MonitorClient.Start();
 NPL.load("(gl)Mod/HTML5Monitor/H5MonitorClient.lua");
 local H5MonitorClient = commonlib.gettable("Mod.HTML5Monitor.H5MonitorClient");
 H5MonitorClient.Send({"hello world"});
-'''
+```
 
