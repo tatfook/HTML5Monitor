@@ -44,7 +44,7 @@ end
 
 ?>
 <h1>Monitor Server</h1>
-<div ng-app="H5MonitorServer_App" >
+<div ng-app="H5Monitor_App" >
 	<monitor-server></monitor-server>
 </div>
 

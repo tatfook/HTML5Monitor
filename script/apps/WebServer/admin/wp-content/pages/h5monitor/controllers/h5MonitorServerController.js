@@ -1,4 +1,4 @@
-angular.module('H5MonitorServer_App', ['ngStorage'])
+angular.module('H5Monitor_App', ['ngStorage'])
 .component("monitorServer", {
     templateUrl: "/wp-content/pages/h5monitor/templates/H5MonitorServerTemplate.html",
     controller: function ($scope, $http, $interval) {

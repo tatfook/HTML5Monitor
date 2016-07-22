@@ -59,7 +59,7 @@ end
 
 ?>
 <h1>Monitor Client</h1>
-<div ng-app="H5MonitorClient_App" >
+<div ng-app="H5Monitor_App" >
 	<monitor-client></monitor-client>
 </div>
 
