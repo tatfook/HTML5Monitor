@@ -118,10 +118,12 @@
     <None Include="Mod\HTML5Monitor\main.lua" />
     <None Include="README.md" />
     <None Include="Run.bat" />
+    <None Include="script\apps\WebServer\admin\wp-content\pages\H5Monitor.page" />
     <None Include="script\apps\WebServer\admin\wp-content\pages\H5MonitorClient.page" />
     <None Include="script\apps\WebServer\admin\wp-content\pages\H5MonitorServer.page" />
     <None Include="script\apps\WebServer\admin\wp-content\pages\h5monitor\app.js" />
     <None Include="script\apps\WebServer\admin\wp-content\pages\h5monitor\controllers\h5MonitorClientController.js" />
+    <None Include="script\apps\WebServer\admin\wp-content\pages\h5monitor\controllers\h5MonitorController.js" />
     <None Include="script\apps\WebServer\admin\wp-content\pages\h5monitor\controllers\h5MonitorServerController.js" />
     <None Include="script\apps\WebServer\admin\wp-content\pages\h5monitor\templates\H5MonitorClientTemplate.html" />
     <None Include="script\apps\WebServer\admin\wp-content\pages\h5monitor\templates\H5MonitorServerTemplate.html" />

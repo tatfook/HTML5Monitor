@@ -34,7 +34,7 @@ end
 function H5MonitorClient.Start(host,port)
     H5MonitorClient.AddPublicFiles();
    -- since this is a pure client, no need to listen to any port. 
-	NPL.StartNetServer("0", "0");
+   -- NPL.StartNetServer("0", "0");
     
 	host= host or "127.0.0.1";
 	port = port or "60001";
@@ -47,7 +47,7 @@ function H5MonitorClient.Start(host,port)
 	NPL.AddNPLRuntimeAddress(params);
 	H5MonitorClient.Send({},true)
 	H5MonitorClient.handle_msgs = { client_connected = true };
-    LOG.std(nil, "info", "H5MonitorClient", "started host:%s port: %s",host,port);
+    LOG.std(nil, "info", "H5MonitorClient", "Connect host:%s port: %s",host,port);
 end
 function H5MonitorClient.Stop()
 end
@@ -78,15 +78,14 @@ function H5MonitorClient.TakeScreenShot(width,height)
 		ParaMovie.TakeScreenShot(imageFile);
 	end
 	local imageObj = ParaIO.open(imageFile, "r");
-	local imageSize = imageObj:GetFileSize()
 	local imageData = imageObj:GetText(0, -1);
+	local image = {imageData = imageData}
 	imageObj:close();
-	return imageData, imageSize;
+	return image
 end
 local function activate()
 	if(msg)then
 		LOG.std(nil, "info", "H5MonitorClient", "got a message");
-		echo(msg);
 		H5MonitorClient.handle_msgs = msg;
 	end
 end

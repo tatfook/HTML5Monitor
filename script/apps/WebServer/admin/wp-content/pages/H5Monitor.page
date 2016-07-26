@@ -1,0 +1,146 @@
+<?npl
+--[[
+Title: H5MonitorClient.page
+Author: leio
+Date: 2016/7/21
+Revised: MarxWolf 2016/07/23
+Desc: 
+]]
+
+wp_enqueue_script("ace",						"/wp-includes/js/ace/ace.js"); 
+wp_enqueue_script("angular",					"/wp-includes/js/angular/angular.min.js");
+wp_enqueue_script("ngStorage",					"/wp-includes/js/angular/ngStorage.js");
+wp_enqueue_script("ngSanitize",					"/wp-includes/js/angular/angular-sanitize.min.js");
+
+wp_enqueue_script("ngDialog",                   "/wp-includes/js/ngDialog.min.js");
+wp_enqueue_style("ngDialogCSS",                   "/wp-admin/css/ngDialog.min.css");
+wp_enqueue_style("ngDialog-theme-default",      "/wp-admin/css/ngDialog-theme-default.min.css");
+wp_enqueue_style("ngDialog-theme-plain",	    "/wp-admin/css/ngDialog-theme-plain.min.css");
+wp_enqueue_script("H5Monitor_App",					"/wp-content/pages/h5monitor/app.js");
+wp_enqueue_script("h5MonitorController",			"/wp-content/pages/h5monitor/controllers/h5MonitorController.js");
+
+
+NPL.load("(gl)script/ide/System/Encoding/base64.lua");
+NPL.load("(gl)Mod/HTML5Monitor/H5MonitorClient.lua");
+NPL.load("(gl)Mod/HTML5Monitor/H5MonitorServer.lua");
+
+local Encoding = commonlib.gettable("System.Encoding");
+local H5MonitorClient = commonlib.gettable("Mod.HTML5Monitor.H5MonitorClient");
+local H5MonitorServer = commonlib.gettable("Mod.HTML5Monitor.H5MonitorServer");
+
+local string = string;
+
+-- can use both server and client side to connect with the specific computer
+local function GetServer()
+	local server = request:get("server")
+	local ip = string.match(server,"^(.*):.*$")		
+	local port = string.match(server,"^.*:(.*)$");	
+	local username = request:get("username");
+	return ip, port, username
+end
+
+-- client side, to request image width and height info
+local function GetImageInfo()
+	local imageInfo = {imageWidth="", imageHeight=""}
+	local res = H5MonitorClient.Send(imageInfo);
+	return res;
+end
+
+-- server side, to set image width and height info
+-- @param: is_small, to save bandwidth and time, usually set small size image, when necessary, set large size
+local function SetImageInfo(is_small)
+	local imageWidth, imageHeight;
+	if (is_small) then
+		imageWidth = 256;  -- need to be replaced by the screen info
+		imageHeight = 256; 
+	else
+		imageWidth = 512;
+		imageHeight = 512;
+	end
+	local imageInfo = {imageWidth=imageWidth, imageHeight=imageHeight}
+	H5MonitorServer.Send(imageInfo)
+end
+
+-- client side, to read image info from the msgs transmit by server
+local function ImageInfo()
+	local imageWidth = H5MonitorClient.GetHandleMsg().imageWidth;
+	local imageHeight = H5MonitorClient.GetHandleMsg().imageHeight;
+	return imageWidth, imageHeight
+end
+
+-- client side, to get image data, and it will return a table {"imageData":imageData}
+local function GetImage()
+	local width, height = ImageInfo();
+	local imageData = H5MonitorClient.TakeScreenShot(width,height);
+	return imageData
+end
+
+-- client side, when get image info from server, send imageData to server
+local function ResponseServer()
+	if(ImageInfo()) then
+		local imageData = GetImage();
+		H5MonitorClient.Send(imageData);
+	else
+		return;
+	end
+end
+
+-- client side, when receive image info request from client, send image info to client
+local function ResponseClient()
+	local clientMsgs = H5MonitorServer.GetHandleMsg();
+	if(clientMsgs.imageWidth and clientMsgs.imageHeight) then
+		SetImageInfo(true);
+	else
+		return;
+	end
+end
+
+
+if(is_ajax()) then
+	add_action('wp_ajax_monitor_client_start', function()
+		local ip, port, username = GetServer();
+		H5MonitorClient.Start(tostring(ip),tostring(port));
+		local status = GetImageInfo();
+		while(not ImageInfo()) do
+		end
+		ResponseServer();
+		wp_send_json({status = status}, true);
+    end)
+
+	add_action('wp_ajax_monitor_server_start', function()
+		local ip, port, username = GetServer();
+		H5MonitorServer.Start(tostring(ip),tostring(port));
+		SetImageInfo(true);
+		local msgs = H5Monitor.GetHandleMsg();
+		while(not msgs.imageData) do
+			msgs = H5MonitorServer.GetHandleMsg();
+		end
+		wp_send_json(msgs,true);
+	end)
+
+	add_action('wp_ajax_monitor_show_large_image', function()
+		SetImageInfo();
+		local msgs = H5Monitor.GetHandleMsg();
+		while(not msgs.imageData) do
+			msgs = H5MonitorServer.GetHandleMsg();
+		end
+		wp_send_json(msgs,true);
+	end)
+	
+	add_action('wp_ajax_monitor_show_screen_shot', function()
+			
+		local msgs = H5MonitorServer.GetHandleMsg();
+		while(not msgs.imageData) do
+			msgs = H5MonitorServer.GetHandleMsg();
+		end
+		wp_send_json(msgs, true);
+    end)
+	return;
+end
+
+?>
+
+<div ng-app="H5Monitor_App" >
+	<monitor></monitor>
+</div>
+

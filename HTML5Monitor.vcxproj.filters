@@ -76,5 +76,11 @@
     <None Include="StartServer.bat" />
     <None Include="StartClient1.bat" />
     <None Include="StartClient0.bat" />
+    <None Include="script\apps\WebServer\admin\wp-content\pages\h5monitor\controllers\h5MonitorController.js">
+      <Filter>script\apps\WebServer\admin\wp-content\pages\h5monitor\controllers</Filter>
+    </None>
+    <None Include="script\apps\WebServer\admin\wp-content\pages\H5Monitor.page">
+      <Filter>script\apps\WebServer\admin\wp-content\pages</Filter>
+    </None>
   </ItemGroup>
 </Project>
