@@ -32,11 +32,15 @@ angular.module('H5Monitor_App', ['ngStorage'])
         $scope.startTimer = function () {
             if (angular.isDefined(pollTimer)) return;
             pollTimer = $interval(function () {
-                $scope.doTakeScreenShot();
-            }, 2000);
+                $scope.refreshMsg();
+            }, 500);
         }
         $scope.refreshMsg = function () {
-			$scope.startTimer();
+            $http.get("ajax/H5MonitorClient?action=monitor_poll_msg").then(function (response) {
+                var msgs = response.data.msgs;
+                $scope.handleMessage(msgs);
+                console.log(msgs);
+            });
         }
         $scope.stopTimer = function () {
             if (angular.isDefined(pollTimer)) {

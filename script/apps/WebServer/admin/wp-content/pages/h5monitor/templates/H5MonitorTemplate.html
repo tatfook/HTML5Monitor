@@ -13,3 +13,35 @@
 	<img id="screen_shot_image" ng-click="showLargeImage()" onmouseover="showImageInfo()"/>
 </div>
 
+
+<script type="text/ng-template" id="connectInfoDialog">
+	<div class="ngdialog-message">
+		<h5> You have connected to the server! </h5>
+	</div>	
+</script>
+
+<script type="text/ng-template" id="addNewClientDialog">
+	<div class="ngdialog-message">
+		<div class="ngdialog-message">
+			<table>
+				<tr>
+					<td>IP</td>  
+					<td><input type="text" class="form-control" id="server"  placeholder="Enter client IP"></td>
+				</tr>
+				<tr>
+					<td>Username</td>
+					<td><input type="text" class="form-control" id="username"  placeholder="Enter client name"></td>
+				<tr>
+			</table>
+		</div>
+		<div class="ngdialog-buttons">
+			<button ng-click="doServerStart()" class="ngdialog-button ngdialog-button-primary">Connect</button>	
+		</div>
+	</div>
+</script>
+
+<script type="text/ng-template" id="showLargeScreenShotDialog">
+	<div class="ngdialog-message">
+		<img id="large_image" />
+	</div>
+</script>

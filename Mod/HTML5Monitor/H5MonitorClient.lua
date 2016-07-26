@@ -79,7 +79,7 @@ function H5MonitorClient.TakeScreenShot(width,height)
 	end
 	local imageObj = ParaIO.open(imageFile, "r");
 	local imageData = imageObj:GetText(0, -1);
-	local image = {imageData = imageData}
+	local image = {imageData = imageData};
 	imageObj:close();
 	return image
 end

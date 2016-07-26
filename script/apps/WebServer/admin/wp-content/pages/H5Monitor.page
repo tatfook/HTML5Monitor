@@ -63,9 +63,16 @@ end
 
 -- client side, to read image info from the msgs transmit by server
 local function ImageInfo()
-	local imageWidth = H5MonitorClient.GetHandleMsg().imageWidth;
-	local imageHeight = H5MonitorClient.GetHandleMsg().imageHeight;
-	return imageWidth, imageHeight
+	local serverMsgs = H5MonitorClient.GetHandleMsg();
+	if(serverMsgs) then 
+		if(serverMsgs.imageWidth and serverMsgs.imageHeight) then
+			local imageWidth = serverMsgs.imageWidth;
+			local imageHeight = serverMsgs.imageHeight;
+			return imageWidth, imageHeight;
+		end
+	else
+		return;
+	end
 end
 
 -- client side, to get image data, and it will return a table {"imageData":imageData}
@@ -88,8 +95,10 @@ end
 -- client side, when receive image info request from client, send image info to client
 local function ResponseClient()
 	local clientMsgs = H5MonitorServer.GetHandleMsg();
-	if(clientMsgs.imageWidth and clientMsgs.imageHeight) then
-		SetImageInfo(true);
+	if(clientMsgs) then
+		if(clientMsgs.imageWidth and clientMsgs.imageHeight) then
+			SetImageInfo(true);
+		end
 	else
 		return;
 	end
@@ -97,6 +106,7 @@ end
 
 
 if(is_ajax()) then
+-- client side, 
 	add_action('wp_ajax_monitor_client_start', function()
 		local ip, port, username = GetServer();
 		H5MonitorClient.Start(tostring(ip),tostring(port));
@@ -106,7 +116,7 @@ if(is_ajax()) then
 		ResponseServer();
 		wp_send_json({status = status}, true);
     end)
-
+-- server side, 
 	add_action('wp_ajax_monitor_server_start', function()
 		local ip, port, username = GetServer();
 		H5MonitorServer.Start(tostring(ip),tostring(port));
@@ -118,7 +128,8 @@ if(is_ajax()) then
 		wp_send_json(msgs,true);
 	end)
 
-	add_action('wp_ajax_monitor_show_large_image', function()
+-- server side,
+	add_action('wp_ajax_monitor_show_large_screen_shot', function()
 		SetImageInfo();
 		local msgs = H5Monitor.GetHandleMsg();
 		while(not msgs.imageData) do
@@ -126,7 +137,8 @@ if(is_ajax()) then
 		end
 		wp_send_json(msgs,true);
 	end)
-	
+
+-- server side,	
 	add_action('wp_ajax_monitor_show_screen_shot', function()
 			
 		local msgs = H5MonitorServer.GetHandleMsg();
@@ -135,6 +147,8 @@ if(is_ajax()) then
 		end
 		wp_send_json(msgs, true);
     end)
+
+
 	return;
 end
 
@@ -143,4 +157,3 @@ end
 <div ng-app="H5Monitor_App" >
 	<monitor></monitor>
 </div>
-

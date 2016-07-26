@@ -13,12 +13,10 @@ angular.module('H5Monitor_App', ['ngStorage','ngDialog'])
             $http.get(url).then(function (response) {
                 if (response.data.status == 0) {
                     ngDialog.open({
-                        template: '/wp-content/pages/h5monitor/templates/connectInfoTemplate.html', className: 'ngdialog-theme-plain',
+                        template: 'connectInfoDialog', className: 'ngdialog-theme-plain',
                     });
-                }
-                    
+                }     
             });
-           
         }
 
         $scope.doServerStart = function () {
@@ -26,17 +24,27 @@ angular.module('H5Monitor_App', ['ngStorage','ngDialog'])
             var username = $("#username").val();
             var url = "ajax/H5Monitor?action=monitor_monitor_start&server=" + server + "&username=" + username;
             $http.get(url).then(function (response) {
-                $scope.startTimer();
+                $scope.showScreenShot();
             });
         }
 
-        $scope.startTimer = function () {
+        $scope.showScreenShot = function () {
             if (angular.isDefined(pollTimer)) return;
             pollTimer = $interval(function () {
                 $scope.doShowScreenShot();
-            }, 1000);
+            }, 3000);
         }
- 
+        
+        $scope.showLargeScreenShot = function () {
+            if (angular.isDefined(pollTimer)) return;
+            ngDialog.open({
+                template: 'showLargeScreenShot', className: 'ngdialog-theme-plain',
+            });
+            pollTimer = $interval(function () {
+                $scope.showLargeImage();
+            }, 3000);
+        }
+
         $scope.drawImage = function (imageData) {
             var img = document.getElementById("screen_shot_image");
             img.src = "data:image/png;base64," + imageData;
@@ -57,11 +65,8 @@ angular.module('H5Monitor_App', ['ngStorage','ngDialog'])
             });
         }
 
-        $scope.showLargeImage = function () {
-            var url = "ajax/H5Monitor?action=monitor_show_large_image";
-            ngDialog.open({
-                template: '/wp-content/pages/h5monitor/templates/showLargeImage.html', className: 'ngdialog-theme-plain',
-            }); 
+        $scope.doShowLargeScreenShot = function () {
+            var url = "ajax/H5Monitor?action=monitor_show_large_screen_shot";
             $http.get(url).then(function (response) {
                 if (response.data) {
                     var imageData = response.data.imageData;
@@ -70,11 +75,14 @@ angular.module('H5Monitor_App', ['ngStorage','ngDialog'])
             });
         }
 
-        $scope.addNewClient = function () {
-            ngDialog.open({
-                template: '/wp-content/pages/h5monitor/templates/addNewClientTemplate.html', className: 'ngdialog-theme-plain',
-            });
+        $scope.showImageInfo = function () {
+            var url = "";
         }
 
+        $scope.addNewClient = function () {
+            ngDialog.open({
+                template: 'addNewClientDialog', className: 'ngdialog-theme-plain',
+            });
+        }
     }
 })
