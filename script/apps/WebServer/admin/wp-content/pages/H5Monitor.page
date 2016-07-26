@@ -32,11 +32,19 @@ local string = string;
 
 -- can use both server and client side to connect with the specific computer
 local function GetServer()
-	local server = request:get("server")
-	local ip = string.match(server,"^(.*):.*$")		
+	local server = request:get("server");
+	local ip = string.match(server,"^(.*):.*$");	
 	local port = string.match(server,"^.*:(.*)$");	
 	local username = request:get("username");
 	return ip, port, username
+end
+
+local function GetClient()
+	local client = request:get("client")
+	local ip = string.match(client, "^(.*):.*$");
+	local port = string.match(client,"^.*:(.*)$");	
+	local clientname = request:get("clientname");
+	return ip, port, clientname
 end
 
 -- client side, to request image width and height info
@@ -116,12 +124,13 @@ if(is_ajax()) then
 		ResponseServer();
 		wp_send_json({status = status}, true);
     end)
+
 -- server side, 
 	add_action('wp_ajax_monitor_server_start', function()
-		local ip, port, username = GetServer();
+		local ip, port, clientname = GetClient();
 		H5MonitorServer.Start(tostring(ip),tostring(port));
 		SetImageInfo(true);
-		local msgs = H5Monitor.GetHandleMsg();
+		local msgs = H5MonitorServer.GetHandleMsg();
 		while(not msgs.imageData) do
 			msgs = H5MonitorServer.GetHandleMsg();
 		end
@@ -131,7 +140,7 @@ if(is_ajax()) then
 -- server side,
 	add_action('wp_ajax_monitor_show_large_screen_shot', function()
 		SetImageInfo();
-		local msgs = H5Monitor.GetHandleMsg();
+		local msgs = H5MonitorServer.GetHandleMsg();
 		while(not msgs.imageData) do
 			msgs = H5MonitorServer.GetHandleMsg();
 		end
@@ -148,6 +157,10 @@ if(is_ajax()) then
 		wp_send_json(msgs, true);
     end)
 
+	add_action('wp_ajax_monitor_show_screen_shot_info', function()
+		
+
+	end)
 
 	return;
 end

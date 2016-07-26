@@ -14,15 +14,18 @@ angular.module('H5Monitor_App', ['ngStorage','ngDialog'])
                 if (response.data.status == 0) {
                     ngDialog.open({
                         template: 'connectInfoDialog', className: 'ngdialog-theme-plain',
+                        scope: $scope,
                     });
                 }     
             });
         }
 
         $scope.doServerStart = function () {
-            var server = $("#server").val();
-            var username = $("#username").val();
-            var url = "ajax/H5Monitor?action=monitor_monitor_start&server=" + server + "&username=" + username;
+            var client = $("#client").val();
+            var clientname = $("#clientname").val();
+            var url = "ajax/H5Monitor?action=monitor_server_start&client=" + client + "&clientname=" + clientname;
+            ngDialog.close("addNewClientDialogId");
+            //$scope.closeThisDialog();
             $http.get(url).then(function (response) {
                 $scope.showScreenShot();
             });
@@ -75,13 +78,19 @@ angular.module('H5Monitor_App', ['ngStorage','ngDialog'])
             });
         }
 
-        $scope.showImageInfo = function () {
-            var url = "";
+        $scope.showScreenShotInfo = function () {
+            var url = "ajax/H5Monitor?action=monitor_show_screen_shot_info";
+            $http.get(url).then(function (response) {
+
+
+            });
         }
 
         $scope.addNewClient = function () {
             ngDialog.open({
+                id: 'addNewClientDialogId',
                 template: 'addNewClientDialog', className: 'ngdialog-theme-plain',
+                scope:$scope,
             });
         }
     }
