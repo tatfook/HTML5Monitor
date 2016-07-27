@@ -5,12 +5,14 @@
 			<input type="text" class="form-control" id="username"  placeholder="Enter your name">
 		</div>
 		<button ng-click="doClientStart()" class="btn btn-success">Connect</button>	
+		<button ng-click="doClientSend()" class="btn btn-success">Send</button>	
 	</form>
 </div>
 
 <div class="row">
 	<input type="image" id="add_new_client" ng-click="addNewClient()" src="wp-includes/img/add_new_client.png" />
-	<img id="screen_shot_image" ng-click="showLargeImage()" onmouseover="showImageInfo()"/>
+	<button ng-click="doShowScreenShot()" class="btn btn-success">Show Screen Shot</button>	
+	<img id="screen_shot_image" ng-click="showLargeScreenShot()" ng-mouseover="showScreenShotInfo()"/>
 </div>
 
 

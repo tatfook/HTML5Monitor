@@ -79,14 +79,17 @@ function H5MonitorClient.TakeScreenShot(width,height)
 	end
 	local imageObj = ParaIO.open(imageFile, "r");
 	local imageData = imageObj:GetText(0, -1);
-	local image = {imageData = imageData};
 	imageObj:close();
-	return image
+	return imageData
 end
 local function activate()
 	if(msg)then
 		LOG.std(nil, "info", "H5MonitorClient", "got a message");
-		H5MonitorClient.handle_msgs = msg;
+		if(msg.login)then
+			--connection
+		else
+			H5MonitorClient.handle_msgs = msg;
+		end
 	end
 end
 NPL.this(activate)

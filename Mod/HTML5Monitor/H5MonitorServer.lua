@@ -59,10 +59,12 @@ end
 function H5MonitorServer.GetHandleMsg()
 	return H5MonitorServer.handle_msgs;
 end
+
 local function activate()
 	if(not msg.nid)then
 		LOG.std(nil, "info", "H5MonitorServer", "accept");
-		NPL.accept(msg.tid, last_client_nid);
+		NPL.accept(msg.tid, nid);
+		H5MonitorServer.Send({login = true});	
 	end
 	LOG.std(nil, "info", "H5MonitorServer", "got a message");
 	H5MonitorServer.handle_msgs = msg;

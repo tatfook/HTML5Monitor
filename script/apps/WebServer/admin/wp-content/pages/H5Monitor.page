@@ -13,11 +13,11 @@ wp_enqueue_script("ngStorage",					"/wp-includes/js/angular/ngStorage.js");
 wp_enqueue_script("ngSanitize",					"/wp-includes/js/angular/angular-sanitize.min.js");
 
 wp_enqueue_script("ngDialog",                   "/wp-includes/js/ngDialog.min.js");
-wp_enqueue_style("ngDialogCSS",                   "/wp-admin/css/ngDialog.min.css");
+wp_enqueue_style("ngDialogCSS",                 "/wp-admin/css/ngDialog.min.css");
 wp_enqueue_style("ngDialog-theme-default",      "/wp-admin/css/ngDialog-theme-default.min.css");
 wp_enqueue_style("ngDialog-theme-plain",	    "/wp-admin/css/ngDialog-theme-plain.min.css");
-wp_enqueue_script("H5Monitor_App",					"/wp-content/pages/h5monitor/app.js");
-wp_enqueue_script("h5MonitorController",			"/wp-content/pages/h5monitor/controllers/h5MonitorController.js");
+wp_enqueue_script("H5Monitor_App",			    "/wp-content/pages/h5monitor/app.js");
+wp_enqueue_script("h5MonitorController",		"/wp-content/pages/h5monitor/controllers/h5MonitorController.js");
 
 
 NPL.load("(gl)script/ide/System/Encoding/base64.lua");
@@ -85,9 +85,12 @@ end
 
 -- client side, to get image data, and it will return a table {"imageData":imageData}
 local function GetImage()
-	local width, height = ImageInfo();
+	--local width, height = ImageInfo();
+	local width, height = 256, 256;
 	local imageData = H5MonitorClient.TakeScreenShot(width,height);
-	return imageData
+	imageData = Encoding.base64(imageData);
+	image = {imageData= imageData};
+	return image
 end
 
 -- client side, when get image info from server, send imageData to server
@@ -114,16 +117,20 @@ end
 
 
 if(is_ajax()) then
+
 -- client side, 
 	add_action('wp_ajax_monitor_client_start', function()
 		local ip, port, username = GetServer();
 		H5MonitorClient.Start(tostring(ip),tostring(port));
-		local status = GetImageInfo();
-		while(not ImageInfo()) do
-		end
-		ResponseServer();
-		wp_send_json({status = status}, true);
+		wp_send_json({}, true);
     end)
+
+	add_action('wp_ajax_monitor_client_send', function()
+		local status = GetImageInfo();
+		local imageData = GetImage();
+		H5MonitorClient.Send(imageData);
+		wp_send_json({status = status}, true);
+	end)
 
 -- server side, 
 	add_action('wp_ajax_monitor_server_start', function()
@@ -131,9 +138,6 @@ if(is_ajax()) then
 		H5MonitorServer.Start(tostring(ip),tostring(port));
 		SetImageInfo(true);
 		local msgs = H5MonitorServer.GetHandleMsg();
-		while(not msgs.imageData) do
-			msgs = H5MonitorServer.GetHandleMsg();
-		end
 		wp_send_json(msgs,true);
 	end)
 
@@ -141,22 +145,16 @@ if(is_ajax()) then
 	add_action('wp_ajax_monitor_show_large_screen_shot', function()
 		SetImageInfo();
 		local msgs = H5MonitorServer.GetHandleMsg();
-		while(not msgs.imageData) do
-			msgs = H5MonitorServer.GetHandleMsg();
-		end
 		wp_send_json(msgs,true);
 	end)
 
 -- server side,	
-	add_action('wp_ajax_monitor_show_screen_shot', function()
-			
+	add_action('wp_ajax_monitor_show_screen_shot', function()	
 		local msgs = H5MonitorServer.GetHandleMsg();
-		while(not msgs.imageData) do
-			msgs = H5MonitorServer.GetHandleMsg();
-		end
 		wp_send_json(msgs, true);
     end)
 
+-- server side,
 	add_action('wp_ajax_monitor_show_screen_shot_info', function()
 		
 

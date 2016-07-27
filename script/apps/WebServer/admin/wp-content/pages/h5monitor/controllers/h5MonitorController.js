@@ -11,12 +11,20 @@ angular.module('H5Monitor_App', ['ngStorage','ngDialog'])
             var username = $("#username").val();
             var url = "ajax/H5Monitor?action=monitor_client_start&server=" + server + "&username=" + username;
             $http.get(url).then(function (response) {
+
+            });
+        }
+
+        $scope.doClientSend = function () {
+            var url = "ajax/H5Monitor?action=monitor_client_send";
+            $http.get(url).then(function (response) {
                 if (response.data.status == 0) {
                     ngDialog.open({
+                        id: 'connectInfoDialogID',
                         template: 'connectInfoDialog', className: 'ngdialog-theme-plain',
                         scope: $scope,
                     });
-                }     
+                }
             });
         }
 
@@ -24,8 +32,7 @@ angular.module('H5Monitor_App', ['ngStorage','ngDialog'])
             var client = $("#client").val();
             var clientname = $("#clientname").val();
             var url = "ajax/H5Monitor?action=monitor_server_start&client=" + client + "&clientname=" + clientname;
-            ngDialog.close("addNewClientDialogId");
-            //$scope.closeThisDialog();
+            ngDialog.close("addNewClientDialogID");
             $http.get(url).then(function (response) {
                 $scope.showScreenShot();
             });
@@ -42,9 +49,10 @@ angular.module('H5Monitor_App', ['ngStorage','ngDialog'])
             if (angular.isDefined(pollTimer)) return;
             ngDialog.open({
                 template: 'showLargeScreenShot', className: 'ngdialog-theme-plain',
+                scope: $scope,
             });
             pollTimer = $interval(function () {
-                $scope.showLargeImage();
+                $scope.doShowLargeScreenShot();
             }, 3000);
         }
 
@@ -82,13 +90,12 @@ angular.module('H5Monitor_App', ['ngStorage','ngDialog'])
             var url = "ajax/H5Monitor?action=monitor_show_screen_shot_info";
             $http.get(url).then(function (response) {
 
-
             });
         }
 
         $scope.addNewClient = function () {
             ngDialog.open({
-                id: 'addNewClientDialogId',
+                id: 'addNewClientDialogID',
                 template: 'addNewClientDialog', className: 'ngdialog-theme-plain',
                 scope:$scope,
             });
