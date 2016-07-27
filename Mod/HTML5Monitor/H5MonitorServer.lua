@@ -50,7 +50,7 @@ function H5MonitorServer.Stop()
 
 end
 function H5MonitorServer.Send(msg)
-	local nid = msg.nid or msg.tid or last_client_nid;
+	local nid = msg.nid or msg.tid or nid;
 	local res = NPL.activate(string.format("%s:%s", nid, client_file), msg);
 	LOG.std(nil, "info", "H5MonitorServer", "res:%s",tostring(res));
 	return res;
@@ -60,11 +60,15 @@ function H5MonitorServer.GetHandleMsg()
 	return H5MonitorServer.handle_msgs;
 end
 
+function H5MonitorServer.GetIP()
+	local remoteIP = NPL.GetIP(msg.nid or msg.tid or nid);
+	return remoteIP;
+end
+
 local function activate()
 	if(not msg.nid)then
 		LOG.std(nil, "info", "H5MonitorServer", "accept");
-		NPL.accept(msg.tid, nid);
-		H5MonitorServer.Send({login = true});	
+		NPL.accept(msg.tid, nid);	
 	end
 	LOG.std(nil, "info", "H5MonitorServer", "got a message");
 	H5MonitorServer.handle_msgs = msg;

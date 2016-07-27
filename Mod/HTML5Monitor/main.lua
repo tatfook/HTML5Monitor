@@ -38,7 +38,7 @@ end
 -- called when a new world is loaded. 
 
 function HTML5Monitor:OnWorldLoad() 
-    Helper:Hello();
+   
 end
 
 -- called when a world is unloaded. 

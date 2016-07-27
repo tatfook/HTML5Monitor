@@ -85,11 +85,7 @@ end
 local function activate()
 	if(msg)then
 		LOG.std(nil, "info", "H5MonitorClient", "got a message");
-		if(msg.login)then
-			--connection
-		else
-			H5MonitorClient.handle_msgs = msg;
-		end
+		H5MonitorClient.handle_msgs = msg;
 	end
 end
 NPL.this(activate)

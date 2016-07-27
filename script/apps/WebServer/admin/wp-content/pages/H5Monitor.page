@@ -20,6 +20,7 @@ wp_enqueue_script("H5Monitor_App",			    "/wp-content/pages/h5monitor/app.js");
 wp_enqueue_script("h5MonitorController",		"/wp-content/pages/h5monitor/controllers/h5MonitorController.js");
 
 
+NPL.load("(gl)script/ide/timer.lua");
 NPL.load("(gl)script/ide/System/Encoding/base64.lua");
 NPL.load("(gl)Mod/HTML5Monitor/H5MonitorClient.lua");
 NPL.load("(gl)Mod/HTML5Monitor/H5MonitorServer.lua");
@@ -35,16 +36,24 @@ local function GetServer()
 	local server = request:get("server");
 	local ip = string.match(server,"^(.*):.*$");	
 	local port = string.match(server,"^.*:(.*)$");	
+	return ip, port
+end
+
+local function GetUsername()
 	local username = request:get("username");
-	return ip, port, username
+	return username;
 end
 
 local function GetClient()
 	local client = request:get("client")
 	local ip = string.match(client, "^(.*):.*$");
 	local port = string.match(client,"^.*:(.*)$");	
+	return ip, port
+end
+
+local function GetClientname()
 	local clientname = request:get("clientname");
-	return ip, port, clientname
+	return clientname
 end
 
 -- client side, to request image width and height info
@@ -88,8 +97,8 @@ local function GetImage()
 	--local width, height = ImageInfo();
 	local width, height = 256, 256;
 	local imageData = H5MonitorClient.TakeScreenShot(width,height);
-	imageData = Encoding.base64(imageData);
-	image = {imageData= imageData};
+	local imageData = Encoding.base64(imageData);
+	local image = {imageData= imageData};
 	return image
 end
 
@@ -117,24 +126,28 @@ end
 
 
 if(is_ajax()) then
-
 -- client side, 
 	add_action('wp_ajax_monitor_client_start', function()
-		local ip, port, username = GetServer();
+		local ip, port = GetServer();
+		local status;
 		H5MonitorClient.Start(tostring(ip),tostring(port));
-		wp_send_json({}, true);
+		local mytimer = commonlib.Timer:new({callbackFunc = function(timer)
+			status = GetImageInfo();
+		end})
+		mytimer:Change(1000, nil);
+		wp_send_json({status = status}, true);
+		local mytimerSend = commonlib.Timer:new({callbackFunc = function(timer)
+			local imageData = GetImage();
+			--imageData.username = GetUsername();
+			H5MonitorClient.Send(imageData);
+		end})
+		mytimerSend:Change(200,3000);
     end)
 
-	add_action('wp_ajax_monitor_client_send', function()
-		local status = GetImageInfo();
-		local imageData = GetImage();
-		H5MonitorClient.Send(imageData);
-		wp_send_json({status = status}, true);
-	end)
 
 -- server side, 
 	add_action('wp_ajax_monitor_server_start', function()
-		local ip, port, clientname = GetClient();
+		local ip, port = GetClient();
 		H5MonitorServer.Start(tostring(ip),tostring(port));
 		SetImageInfo(true);
 		local msgs = H5MonitorServer.GetHandleMsg();
@@ -144,20 +157,27 @@ if(is_ajax()) then
 -- server side,
 	add_action('wp_ajax_monitor_show_large_screen_shot', function()
 		SetImageInfo();
-		local msgs = H5MonitorServer.GetHandleMsg();
-		wp_send_json(msgs,true);
+		local largeScreenShot = H5MonitorServer.GetHandleMsg();
+		wp_send_json(largeScreenShot,true);
 	end)
 
 -- server side,	
 	add_action('wp_ajax_monitor_show_screen_shot', function()	
-		local msgs = H5MonitorServer.GetHandleMsg();
-		wp_send_json(msgs, true);
+		local screenShot = H5MonitorServer.GetHandleMsg();
+		if(screenShot.imageData) then
+			wp_send_json(screenShot, true);
+		else
+			wp_send_json({},true);
+		end
     end)
 
 -- server side,
 	add_action('wp_ajax_monitor_show_screen_shot_info', function()
-		
-
+		local remoteIP = H5MonitorServer.GetIP();
+		local username = GetUsername() or GetClientname();
+		local screenShotInfo = { remoteIP = remoteIP,
+			username = username};
+		wp_send_json(screenShotInfo, true);
 	end)
 
 	return;

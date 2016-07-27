@@ -11,13 +11,6 @@ angular.module('H5Monitor_App', ['ngStorage','ngDialog'])
             var username = $("#username").val();
             var url = "ajax/H5Monitor?action=monitor_client_start&server=" + server + "&username=" + username;
             $http.get(url).then(function (response) {
-
-            });
-        }
-
-        $scope.doClientSend = function () {
-            var url = "ajax/H5Monitor?action=monitor_client_send";
-            $http.get(url).then(function (response) {
                 if (response.data.status == 0) {
                     ngDialog.open({
                         id: 'connectInfoDialogID',
@@ -46,9 +39,9 @@ angular.module('H5Monitor_App', ['ngStorage','ngDialog'])
         }
         
         $scope.showLargeScreenShot = function () {
-            if (angular.isDefined(pollTimer)) return;
+            //if (angular.isDefined(pollTimer)) return;
             ngDialog.open({
-                template: 'showLargeScreenShot', className: 'ngdialog-theme-plain',
+                template: 'showLargeScreenShotDialog', className: 'ngdialog-theme-plain',
                 scope: $scope,
             });
             pollTimer = $interval(function () {
@@ -89,7 +82,9 @@ angular.module('H5Monitor_App', ['ngStorage','ngDialog'])
         $scope.showScreenShotInfo = function () {
             var url = "ajax/H5Monitor?action=monitor_show_screen_shot_info";
             $http.get(url).then(function (response) {
-
+                //$scope.remoteIP = response.data.remoteIP;
+               // var username = response.data.username;
+                
             });
         }
 
