@@ -13,9 +13,12 @@ wp_enqueue_script("ngStorage",					"/wp-includes/js/angular/ngStorage.js");
 wp_enqueue_script("ngSanitize",					"/wp-includes/js/angular/angular-sanitize.min.js");
 
 wp_enqueue_script("ngDialog",                   "/wp-includes/js/ngDialog.min.js");
-wp_enqueue_style("ngDialogCSS",                 "/wp-admin/css/ngDialog.min.css");
+wp_enqueue_style("ngDialogcss",                 "/wp-admin/css/ngDialog.min.css");
 wp_enqueue_style("ngDialog-theme-default",      "/wp-admin/css/ngDialog-theme-default.min.css");
 wp_enqueue_style("ngDialog-theme-plain",	    "/wp-admin/css/ngDialog-theme-plain.min.css");
+wp_enqueue_script("bootstrapLightbox",                 "/wp-includes/js/angular-bootstrap-lightbox.min.js");
+wp_enqueue_style("lightboxcss",                 "/wp-admin/css/angular-bootstrap-lightbox.min.css");
+
 wp_enqueue_script("H5Monitor_App",			    "/wp-content/pages/h5monitor/app.js");
 wp_enqueue_script("h5MonitorController",		"/wp-content/pages/h5monitor/controllers/h5MonitorController.js");
 
@@ -39,10 +42,6 @@ local function GetServer()
 	return ip, port
 end
 
-local function GetUsername()
-	local username = request:get("username");
-	return username;
-end
 
 local function GetClient()
 	local client = request:get("client")
@@ -51,51 +50,46 @@ local function GetClient()
 	return ip, port
 end
 
-local function GetClientname()
-	local clientname = request:get("clientname");
-	return clientname
-end
-
--- client side, to request image width and height info
-local function GetImageInfo()
-	local imageInfo = {imageWidth="", imageHeight=""}
-	local res = H5MonitorClient.Send(imageInfo);
-	return res;
-end
 
 -- server side, to set image width and height info
 -- @param: is_small, to save bandwidth and time, usually set small size image, when necessary, set large size
 local function SetImageInfo(is_small)
-	local imageWidth, imageHeight;
+	local width;
+	local height;
 	if (is_small) then
-		imageWidth = 256;  -- need to be replaced by the screen info
-		imageHeight = 256; 
+		width = 256;  -- need to be replaced by the screen info
+		height = 256; 
 	else
-		imageWidth = 512;
-		imageHeight = 512;
+		width = 512;
+		height = 512;
 	end
-	local imageInfo = {imageWidth=imageWidth, imageHeight=imageHeight}
+	local imageInfo = {width = width, height = height}
 	H5MonitorServer.Send(imageInfo)
 end
 
 -- client side, to read image info from the msgs transmit by server
-local function ImageInfo()
+local function GetImageInfo()
 	local serverMsgs = H5MonitorClient.GetHandleMsg();
-	if(serverMsgs) then 
-		if(serverMsgs.imageWidth and serverMsgs.imageHeight) then
-			local imageWidth = serverMsgs.imageWidth;
-			local imageHeight = serverMsgs.imageHeight;
-			return imageWidth, imageHeight;
+	local width;
+	local height;
+	if(serverMsgs) then
+		if(serverMsgs.width) then
+			width = serverMsgs.width;
+			height = serverMsgs.height;
 		end
 	else
-		return;
+		width = 256;
+		height = 256;
 	end
+	log(width);
+	log(height);
+	LOG.std(nil, "info", "GetImageInfo", "width:%s, height:%s ", width, height);
+	return width, height;
 end
 
 -- client side, to get image data, and it will return a table {"imageData":imageData}
 local function GetImage()
-	--local width, height = ImageInfo();
-	local width, height = 256, 256;
+	local width, height = GetImageInfo();
 	local imageData = H5MonitorClient.TakeScreenShot(width,height);
 	local imageData = Encoding.base64(imageData);
 	local image = {imageData= imageData};
@@ -104,7 +98,7 @@ end
 
 -- client side, when get image info from server, send imageData to server
 local function ResponseServer()
-	if(ImageInfo()) then
+	if(GetImageInfo()) then
 		local imageData = GetImage();
 		H5MonitorClient.Send(imageData);
 	else
@@ -132,16 +126,16 @@ if(is_ajax()) then
 		local status;
 		H5MonitorClient.Start(tostring(ip),tostring(port));
 		local mytimer = commonlib.Timer:new({callbackFunc = function(timer)
-			status = GetImageInfo();
+			status = H5MonitorClient.Send({});
 		end})
 		mytimer:Change(1000, nil);
 		wp_send_json({status = status}, true);
 		local mytimerSend = commonlib.Timer:new({callbackFunc = function(timer)
 			local imageData = GetImage();
-			--imageData.username = GetUsername();
 			H5MonitorClient.Send(imageData);
 		end})
 		mytimerSend:Change(200,3000);
+
     end)
 
 
@@ -150,8 +144,7 @@ if(is_ajax()) then
 		local ip, port = GetClient();
 		H5MonitorServer.Start(tostring(ip),tostring(port));
 		SetImageInfo(true);
-		local msgs = H5MonitorServer.GetHandleMsg();
-		wp_send_json(msgs,true);
+
 	end)
 
 -- server side,
@@ -174,9 +167,7 @@ if(is_ajax()) then
 -- server side,
 	add_action('wp_ajax_monitor_show_screen_shot_info', function()
 		local remoteIP = H5MonitorServer.GetIP();
-		local username = GetUsername() or GetClientname();
-		local screenShotInfo = { remoteIP = remoteIP,
-			username = username};
+		local screenShotInfo = {remoteIP = remoteIP};
 		wp_send_json(screenShotInfo, true);
 	end)
 

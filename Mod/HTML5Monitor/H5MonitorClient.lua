@@ -71,7 +71,7 @@ end
 function H5MonitorClient.TakeScreenShot(width,height)
 	width = tonumber(width);
 	height = tonumber(height);
-	ParaEngine.ForceRender();ParaEngine.ForceRender();
+	-- ParaEngine.ForceRender();ParaEngine.ForceRender();
 	if(width and height)then
 		ParaMovie.TakeScreenShot(imageFile,width,height);
 	else
@@ -82,6 +82,7 @@ function H5MonitorClient.TakeScreenShot(width,height)
 	imageObj:close();
 	return imageData
 end
+
 local function activate()
 	if(msg)then
 		LOG.std(nil, "info", "H5MonitorClient", "got a message");

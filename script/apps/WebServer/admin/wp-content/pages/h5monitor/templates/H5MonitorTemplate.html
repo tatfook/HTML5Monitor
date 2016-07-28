@@ -2,7 +2,6 @@
 	<form class="form-inline" role="form" method="post">
 		<div class="form-group">
 			<input type="text" class="form-control" id="server"  placeholder="Enter server IP">
-			<input type="text" class="form-control" id="username"  placeholder="Enter your name">
 		</div>
 		<button ng-click="doClientStart()" class="btn btn-success">Connect</button>	
 		
@@ -12,7 +11,7 @@
 <div class="row">
 	<input type="image" id="add_new_client" ng-click="addNewClient()" src="wp-includes/img/add_new_client.png" />
 	<button ng-click="showScreenShot()" class="btn btn-success">Show Screen Shot</button>	
-	<img id="screen_shot_image" ng-click="showLargeScreenShot()"  ng-mouseover="showScreenShotInfo()"/>
+	<a ng-click="showLargeScreenShot()"> <img id="screen_shot_image" ng-mouseover="showScreenShotInfo()"/> </a>
 </div>
 
 
@@ -30,20 +29,10 @@
 					<td>IP</td>  
 					<td><input type="text" class="form-control" id="client"  placeholder="Enter client IP"></td>
 				</tr>
-				<tr>
-					<td>Clientname</td>
-					<td><input type="text" class="form-control" id="clientname"  placeholder="Enter client name"></td>
-				<tr>
 			</table>
 		</div>
 		<div class="ngdialog-buttons">
 			<button ng-click="doServerStart()" class="ngdialog-button ngdialog-button-primary">Connect</button>	
 		</div>
-	</div>
-</script>
-
-<script type="text/ng-template" id="showLargeScreenShotDialog">
-	<div class="ngdialog-message">
-		<img id="large_image" />
 	</div>
 </script>

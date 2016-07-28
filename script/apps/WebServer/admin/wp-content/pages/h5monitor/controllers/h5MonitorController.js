@@ -8,8 +8,7 @@ angular.module('H5Monitor_App', ['ngStorage','ngDialog'])
 
         $scope.doClientStart = function () {
             var server = $("#server").val();
-            var username = $("#username").val();
-            var url = "ajax/H5Monitor?action=monitor_client_start&server=" + server + "&username=" + username;
+            var url = "ajax/H5Monitor?action=monitor_client_start&server=" + server;
             $http.get(url).then(function (response) {
                 if (response.data.status == 0) {
                     ngDialog.open({
@@ -23,8 +22,7 @@ angular.module('H5Monitor_App', ['ngStorage','ngDialog'])
 
         $scope.doServerStart = function () {
             var client = $("#client").val();
-            var clientname = $("#clientname").val();
-            var url = "ajax/H5Monitor?action=monitor_server_start&client=" + client + "&clientname=" + clientname;
+            var url = "ajax/H5Monitor?action=monitor_server_start&client=" + client;
             ngDialog.close("addNewClientDialogID");
             $http.get(url).then(function (response) {
                 $scope.showScreenShot();
@@ -40,10 +38,7 @@ angular.module('H5Monitor_App', ['ngStorage','ngDialog'])
         
         $scope.showLargeScreenShot = function () {
             //if (angular.isDefined(pollTimer)) return;
-            ngDialog.open({
-                template: 'showLargeScreenShotDialog', className: 'ngdialog-theme-plain',
-                scope: $scope,
-            });
+            //Lightbox.openModal($scope.imageSrc);
             pollTimer = $interval(function () {
                 $scope.doShowLargeScreenShot();
             }, 3000);
@@ -51,11 +46,6 @@ angular.module('H5Monitor_App', ['ngStorage','ngDialog'])
 
         $scope.drawImage = function (imageData) {
             var img = document.getElementById("screen_shot_image");
-            img.src = "data:image/png;base64," + imageData;
-        }
-
-        $scope.drawLargeImage = function (imageData) {
-            var img = document.getElementById("large_image");
             img.src = "data:image/png;base64," + imageData;
         }
 
@@ -74,7 +64,7 @@ angular.module('H5Monitor_App', ['ngStorage','ngDialog'])
             $http.get(url).then(function (response) {
                 if (response.data) {
                     var imageData = response.data.imageData;
-                    $scope.drawLargeImage(imageData);
+                    $scope.imageSrc = "data:image/png;base64," + imageData;
                 }
             });
         }
