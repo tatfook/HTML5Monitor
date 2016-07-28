@@ -16,7 +16,7 @@ wp_enqueue_script("ngDialog",                   "/wp-includes/js/ngDialog.min.js
 wp_enqueue_style("ngDialogcss",                 "/wp-admin/css/ngDialog.min.css");
 wp_enqueue_style("ngDialog-theme-default",      "/wp-admin/css/ngDialog-theme-default.min.css");
 wp_enqueue_style("ngDialog-theme-plain",	    "/wp-admin/css/ngDialog-theme-plain.min.css");
-wp_enqueue_script("bootstrapLightbox",                 "/wp-includes/js/angular-bootstrap-lightbox.min.js");
+wp_enqueue_script("bootstrapLightbox",          "/wp-includes/js/angular-bootstrap-lightbox.min.js");
 wp_enqueue_style("lightboxcss",                 "/wp-admin/css/angular-bootstrap-lightbox.min.css");
 
 wp_enqueue_script("H5Monitor_App",			    "/wp-content/pages/h5monitor/app.js");
@@ -60,7 +60,10 @@ if(is_ajax()) then
 	add_action('wp_ajax_monitor_client_start', function()
 		local ip, port = GetServer();
 		H5MonitorClient.Start(tostring(ip),tostring(port));
-		H5MonitorClient.Response();
+		local status = H5MonitorClient.Send({});
+		if(status) then
+			H5MonitorClient.Response();
+		end
 		wp_send_json({status = status}, true);
     end)
 
@@ -68,13 +71,12 @@ if(is_ajax()) then
 	add_action('wp_ajax_monitor_server_start', function()
 		local ip, port = GetClient();
 		H5MonitorServer.Start(tostring(ip),tostring(port));
-		H5MonitorServer.SetImageInfo();
-
+		H5MonitorServer.SetScreenShotInfo();
 	end)
 
 -- server side,
 	add_action('wp_ajax_monitor_show_large_screen_shot', function()
-		H5MonitorServer.SetImageInfo(true);
+		H5MonitorServer.SetScreenShotInfo(true);
 		local largeScreenShot = H5MonitorServer.GetHandleMsg();
 		wp_send_json(largeScreenShot,true);
 	end)

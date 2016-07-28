@@ -64,6 +64,11 @@ function H5MonitorClient.Send(msg,is_first)
 	return res;
 end
 
+function H5MonitorClient.Ping()
+	local status;
+
+end
+
 function H5MonitorClient.GetHandleMsg()
 	return H5MonitorClient.handle_msgs;
 end
@@ -90,7 +95,7 @@ function H5MonitorClient.TakeScreenShot(width,height)
 end
 
 -- client side, to read image info from the msgs transmit by server
-function H5MonitorClient.GetImageInfo()
+function H5MonitorClient.GetScreenShotInfo()
 	local serverMsgs = H5MonitorClient.GetHandleMsg();
 	local width, height = 256, 256;
 	if(serverMsgs) then
@@ -99,27 +104,26 @@ function H5MonitorClient.GetImageInfo()
 			height = serverMsgs.height;
 		end
 	end
-	LOG.std(nil, "info", "GetImageInfo", "width:%s, height:%s ", width, height);
+	LOG.std(nil, "info", "GetScreenShotInfo", "width:%s, height:%s ", width, height);
 	return width, height;
 end
 
 -- client side, to get image data, and it will return a table {"imageData":imageData}
-function H5MonitorClient.GetImage()
-	local width, height = H5MonitorClient.GetImageInfo();
+function H5MonitorClient.GetScreenShot()
+	local width, height = H5MonitorClient.GetScreenShotInfo();
 	local imageData = H5MonitorClient.TakeScreenShot(width,height);
 	local imageData = Encoding.base64(imageData);
-	local image = {imageData= imageData};
+	local image = {imageData = imageData};
 	return image
 end
 
 -- client side, when get image info from server, send imageData to server
 function H5MonitorClient.Response()
 	local clientSendTimer = commonlib.Timer:new({callbackFunc = function(timer)
-			local imageData = H5MonitorClient.GetImage();
+			local imageData = H5MonitorClient.GetScreenShot();
 			H5MonitorClient.Send(imageData);
-			LOG.std(nil, "info", "status", "status: %s", tostring(status));
 	end})
-	clientSendTimer:Change(500,3000);
+	clientSendTimer:Change(0,3000);
 end
 
 local function activate()

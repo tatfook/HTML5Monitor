@@ -65,14 +65,14 @@ function H5MonitorServer.GetIP()
 end
 
 -- @param: is_large, to save bandwidth and time, usually set small size image(nil parameter), when necessary, set large size
-function H5MonitorServer.SetImageInfo(is_large)
+function H5MonitorServer.SetScreenShotInfo(is_large)
 	local width, height = 256, 256;
 	if (is_large) then
 		width = 512;  -- need to be replaced by the screen info
 		height = 512; 
 	end
 	local imageInfo = {width = width, height = height};
-	LOG.std(nil, "info","setImageInfo" ,"width:%s, height: %s", width, height);
+	LOG.std(nil, "info","setScreenShotInfo" ,"width:%s, height: %s", width, height);
 	H5MonitorServer.Send(imageInfo);
 end
 
