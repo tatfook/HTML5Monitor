@@ -31,7 +31,6 @@ function H5MonitorServer.AddPublicFiles()
 end
 function H5MonitorServer.Start(host,port)
     H5MonitorServer.AddPublicFiles();
-	
 	host= host or "127.0.0.1";
 	port = port or "60001";
 	
@@ -65,6 +64,24 @@ function H5MonitorServer.GetIP()
 	return remoteIP;
 end
 
+-- @param: is_large, to save bandwidth and time, usually set small size image(nil parameter), when necessary, set large size
+function H5MonitorServer.SetImageInfo(is_large)
+	local width, height = 256, 256;
+	if (is_large) then
+		width = 512;  -- need to be replaced by the screen info
+		height = 512; 
+	end
+	local imageInfo = {width = width, height = height};
+	LOG.std(nil, "info","setImageInfo" ,"width:%s, height: %s", width, height);
+	H5MonitorServer.Send(imageInfo);
+end
+
+-- server side, when receive image info request from client, send image info to client
+function H5MonitorServer.Response()
+
+end
+
+
 local function activate()
 	if(not msg.nid)then
 		LOG.std(nil, "info", "H5MonitorServer", "accept");
@@ -73,6 +90,7 @@ local function activate()
 	LOG.std(nil, "info", "H5MonitorServer", "got a message");
 	H5MonitorServer.handle_msgs = msg;
 end
+
 function H5MonitorServer.StartLocalWebServer(host,port)
 	NPL.load("(gl)script/apps/WebServer/WebServer.lua");
 	WebServer:Start("script/apps/WebServer/admin", (host or "0.0.0.0"), port or 8092);

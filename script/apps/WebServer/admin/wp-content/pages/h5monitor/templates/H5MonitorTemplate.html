@@ -4,13 +4,13 @@
 			<input type="text" class="form-control" id="server"  placeholder="Enter server IP">
 		</div>
 		<button ng-click="doClientStart()" class="btn btn-success">Connect</button>	
-		
+		<button ng-click="showScreenShot()" class="btn btn-success">Show Screen Shot</button>
 	</form>
 </div>
 
 <div class="row">
 	<input type="image" id="add_new_client" ng-click="addNewClient()" src="wp-includes/img/add_new_client.png" />
-	<button ng-click="showScreenShot()" class="btn btn-success">Show Screen Shot</button>	
+		
 	<a ng-click="showLargeScreenShot()"> <img id="screen_shot_image" ng-mouseover="showScreenShotInfo()"/> </a>
 </div>
 

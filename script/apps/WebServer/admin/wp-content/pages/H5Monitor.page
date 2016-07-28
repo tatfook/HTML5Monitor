@@ -23,133 +23,58 @@ wp_enqueue_script("H5Monitor_App",			    "/wp-content/pages/h5monitor/app.js");
 wp_enqueue_script("h5MonitorController",		"/wp-content/pages/h5monitor/controllers/h5MonitorController.js");
 
 
-NPL.load("(gl)script/ide/timer.lua");
-NPL.load("(gl)script/ide/System/Encoding/base64.lua");
+
 NPL.load("(gl)Mod/HTML5Monitor/H5MonitorClient.lua");
 NPL.load("(gl)Mod/HTML5Monitor/H5MonitorServer.lua");
 
-local Encoding = commonlib.gettable("System.Encoding");
 local H5MonitorClient = commonlib.gettable("Mod.HTML5Monitor.H5MonitorClient");
 local H5MonitorServer = commonlib.gettable("Mod.HTML5Monitor.H5MonitorServer");
 
 local string = string;
 
--- can use both server and client side to connect with the specific computer
+-- can use client side to connect with the specific server
 local function GetServer()
 	local server = request:get("server");
 	local ip = string.match(server,"^(.*):.*$");	
 	local port = string.match(server,"^.*:(.*)$");	
-	return ip, port
+	LOG.std(nil, "info","serverInfo" ,"ip:%s, port: %s", ip, port);
+	return ip, port;
+	
 end
 
-
+-- can use server side to connect with the specific client
 local function GetClient()
 	local client = request:get("client")
 	local ip = string.match(client, "^(.*):.*$");
 	local port = string.match(client,"^.*:(.*)$");	
-	return ip, port
+	LOG.std(nil, "info", "clientInfo","ip:%s, port: %s", ip, port);
+	return ip, port;
+	
 end
 
-
--- server side, to set image width and height info
--- @param: is_small, to save bandwidth and time, usually set small size image, when necessary, set large size
-local function SetImageInfo(is_small)
-	local width;
-	local height;
-	if (is_small) then
-		width = 256;  -- need to be replaced by the screen info
-		height = 256; 
-	else
-		width = 512;
-		height = 512;
-	end
-	local imageInfo = {width = width, height = height}
-	H5MonitorServer.Send(imageInfo)
-end
-
--- client side, to read image info from the msgs transmit by server
-local function GetImageInfo()
-	local serverMsgs = H5MonitorClient.GetHandleMsg();
-	local width;
-	local height;
-	if(serverMsgs) then
-		if(serverMsgs.width) then
-			width = serverMsgs.width;
-			height = serverMsgs.height;
-		end
-	else
-		width = 256;
-		height = 256;
-	end
-	log(width);
-	log(height);
-	LOG.std(nil, "info", "GetImageInfo", "width:%s, height:%s ", width, height);
-	return width, height;
-end
-
--- client side, to get image data, and it will return a table {"imageData":imageData}
-local function GetImage()
-	local width, height = GetImageInfo();
-	local imageData = H5MonitorClient.TakeScreenShot(width,height);
-	local imageData = Encoding.base64(imageData);
-	local image = {imageData= imageData};
-	return image
-end
-
--- client side, when get image info from server, send imageData to server
-local function ResponseServer()
-	if(GetImageInfo()) then
-		local imageData = GetImage();
-		H5MonitorClient.Send(imageData);
-	else
-		return;
-	end
-end
-
--- client side, when receive image info request from client, send image info to client
-local function ResponseClient()
-	local clientMsgs = H5MonitorServer.GetHandleMsg();
-	if(clientMsgs) then
-		if(clientMsgs.imageWidth and clientMsgs.imageHeight) then
-			SetImageInfo(true);
-		end
-	else
-		return;
-	end
-end
 
 
 if(is_ajax()) then
+
 -- client side, 
 	add_action('wp_ajax_monitor_client_start', function()
 		local ip, port = GetServer();
-		local status;
 		H5MonitorClient.Start(tostring(ip),tostring(port));
-		local mytimer = commonlib.Timer:new({callbackFunc = function(timer)
-			status = H5MonitorClient.Send({});
-		end})
-		mytimer:Change(1000, nil);
+		H5MonitorClient.Response();
 		wp_send_json({status = status}, true);
-		local mytimerSend = commonlib.Timer:new({callbackFunc = function(timer)
-			local imageData = GetImage();
-			H5MonitorClient.Send(imageData);
-		end})
-		mytimerSend:Change(200,3000);
-
     end)
-
 
 -- server side, 
 	add_action('wp_ajax_monitor_server_start', function()
 		local ip, port = GetClient();
 		H5MonitorServer.Start(tostring(ip),tostring(port));
-		SetImageInfo(true);
+		H5MonitorServer.SetImageInfo();
 
 	end)
 
 -- server side,
 	add_action('wp_ajax_monitor_show_large_screen_shot', function()
-		SetImageInfo();
+		H5MonitorServer.SetImageInfo(true);
 		local largeScreenShot = H5MonitorServer.GetHandleMsg();
 		wp_send_json(largeScreenShot,true);
 	end)

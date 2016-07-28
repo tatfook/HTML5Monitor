@@ -19,7 +19,10 @@ H5MonitorClient.Send({"hello world"});
 ------------------------------------------------------------
 ]]
 NPL.load("(gl)script/ide/commonlib.lua"); 
+NPL.load("(gl)script/ide/timer.lua");
+NPL.load("(gl)script/ide/System/Encoding/base64.lua");
 local H5MonitorClient = commonlib.gettable("Mod.HTML5Monitor.H5MonitorClient");
+local Encoding = commonlib.gettable("System.Encoding");
 local rts_name = "h5monitor_worker";
 local nid = "h5monitorserver";
 local client_file = "Mod/HTML5Monitor/H5MonitorClient.lua";
@@ -31,11 +34,12 @@ function H5MonitorClient.AddPublicFiles()
     NPL.AddPublicFile(client_file, 7001);
     NPL.AddPublicFile(server_file, 7002);
 end
+
 function H5MonitorClient.Start(host,port)
     H5MonitorClient.AddPublicFiles();
    -- since this is a pure client, no need to listen to any port. 
    -- NPL.StartNetServer("0", "0");
-    
+   
 	host= host or "127.0.0.1";
 	port = port or "60001";
 	
@@ -59,6 +63,7 @@ function H5MonitorClient.Send(msg,is_first)
 	LOG.std(nil, "info", "H5MonitorClient", "res:%s",tostring(res));
 	return res;
 end
+
 function H5MonitorClient.GetHandleMsg()
 	return H5MonitorClient.handle_msgs;
 end
@@ -68,6 +73,7 @@ function H5MonitorClient.StartLocalWebServer(host,port)
 	NPL.load("(gl)script/apps/WebServer/WebServer.lua");
 	WebServer:Start("script/apps/WebServer/admin", (host or "0.0.0.0"), port or 8091);
 end
+
 function H5MonitorClient.TakeScreenShot(width,height)
 	width = tonumber(width);
 	height = tonumber(height);
@@ -81,6 +87,39 @@ function H5MonitorClient.TakeScreenShot(width,height)
 	local imageData = imageObj:GetText(0, -1);
 	imageObj:close();
 	return imageData
+end
+
+-- client side, to read image info from the msgs transmit by server
+function H5MonitorClient.GetImageInfo()
+	local serverMsgs = H5MonitorClient.GetHandleMsg();
+	local width, height = 256, 256;
+	if(serverMsgs) then
+		if(serverMsgs.width) then
+			width = serverMsgs.width;
+			height = serverMsgs.height;
+		end
+	end
+	LOG.std(nil, "info", "GetImageInfo", "width:%s, height:%s ", width, height);
+	return width, height;
+end
+
+-- client side, to get image data, and it will return a table {"imageData":imageData}
+function H5MonitorClient.GetImage()
+	local width, height = H5MonitorClient.GetImageInfo();
+	local imageData = H5MonitorClient.TakeScreenShot(width,height);
+	local imageData = Encoding.base64(imageData);
+	local image = {imageData= imageData};
+	return image
+end
+
+-- client side, when get image info from server, send imageData to server
+function H5MonitorClient.Response()
+	local clientSendTimer = commonlib.Timer:new({callbackFunc = function(timer)
+			local imageData = H5MonitorClient.GetImage();
+			H5MonitorClient.Send(imageData);
+			LOG.std(nil, "info", "status", "status: %s", tostring(status));
+	end})
+	clientSendTimer:Change(500,3000);
 end
 
 local function activate()
