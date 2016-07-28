@@ -19,6 +19,7 @@ H5MonitorServer.Send({"hello world 111"});
 ------------------------------------------------------------
 ]]
 NPL.load("(gl)script/ide/commonlib.lua"); 
+NPL.load("(gl)script/ide/timer.lua");
 local H5MonitorServer = commonlib.gettable("Mod.HTML5Monitor.H5MonitorServer");
 local rts_name = "h5monitor_worker";
 local nid = "stu1";
@@ -81,11 +82,27 @@ function H5MonitorServer.Response()
 
 end
 
+function H5MonitorServer.Ping()
+	local serverStatus = H5MonitorServer.GetHandleMsg();
+	local serverPingTimer; 
+	serverPingTimer = commonlib.Timer:new({callbackFunc = function(timer)
+		H5MonitorServer.Send({ping = true});
+		LOG.std(nil, "info","server ping" ,"ping");
+		if(status.pingSuccess) then
+			serverPingTimer:Change();
+		end
+	end})
+	serverPingTimer:Change(0, 500);
+end
+
 
 local function activate()
 	if(not msg.nid)then
 		LOG.std(nil, "info", "H5MonitorServer", "accept");
 		NPL.accept(msg.tid, nid);	
+		if(msg.ping) then
+			H5MonitorServer.Send({pingSuccess = true});
+		end
 	end
 	LOG.std(nil, "info", "H5MonitorServer", "got a message");
 	H5MonitorServer.handle_msgs = msg;

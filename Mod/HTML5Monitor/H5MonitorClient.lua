@@ -64,10 +64,6 @@ function H5MonitorClient.Send(msg,is_first)
 	return res;
 end
 
-function H5MonitorClient.Ping()
-	local status;
-
-end
 
 function H5MonitorClient.GetHandleMsg()
 	return H5MonitorClient.handle_msgs;
@@ -126,8 +122,26 @@ function H5MonitorClient.Response()
 	clientSendTimer:Change(0,3000);
 end
 
+function H5MonitorClient.Ping() 
+	local clientStatus = H5MonitorClient.GetHandleMsg();
+	local clientPingTimer;
+	clientPingTimer = commonlib.Timer:new({callbackFunc = function(timer)
+		H5MonitorClient.Send({ping = true});
+		LOG.std(nil, "info","client ping" ,"ping");
+		if(clientStatus.pingSuccess) then
+			clientPingTimer:Change()
+		end
+	end})
+	clientPingTimer:Change(0, 500);
+end
+
 local function activate()
 	if(msg)then
+		if(msg.width and msg.height) then
+			H5MonitorClient.Response();
+		elseif (msg.ping) then
+			H5MonitorClient.Send({pingSuccess = true});
+		end
 		LOG.std(nil, "info", "H5MonitorClient", "got a message");
 		H5MonitorClient.handle_msgs = msg;
 	end

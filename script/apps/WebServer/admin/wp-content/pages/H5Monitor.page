@@ -60,18 +60,23 @@ if(is_ajax()) then
 	add_action('wp_ajax_monitor_client_start', function()
 		local ip, port = GetServer();
 		H5MonitorClient.Start(tostring(ip),tostring(port));
-		local status = H5MonitorClient.Send({});
-		if(status) then
+		H5MonitorClient.Ping();
+		local ping = H5MonitorClient.GetHandleMsg();
+		if(ping.pingSuccess) then 
 			H5MonitorClient.Response();
+			wp_send_json({status = 0}, true);
 		end
-		wp_send_json({status = status}, true);
     end)
 
 -- server side, 
 	add_action('wp_ajax_monitor_server_start', function()
 		local ip, port = GetClient();
 		H5MonitorServer.Start(tostring(ip),tostring(port));
-		H5MonitorServer.SetScreenShotInfo();
+		H5MonitorServer.Ping();
+		local ping = H5MonitorServer.GetHandleMsg();
+		if(ping.pingSuccess) then
+			H5MonitorServer.SetScreenShotInfo();
+		end
 	end)
 
 -- server side,

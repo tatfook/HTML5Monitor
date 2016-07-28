@@ -72,9 +72,7 @@ angular.module('H5Monitor_App', ['ngStorage','ngDialog'])
         $scope.showScreenShotInfo = function () {
             var url = "ajax/H5Monitor?action=monitor_show_screen_shot_info";
             $http.get(url).then(function (response) {
-                //$scope.remoteIP = response.data.remoteIP;
-               // var username = response.data.username;
-                
+
             });
         }
 
