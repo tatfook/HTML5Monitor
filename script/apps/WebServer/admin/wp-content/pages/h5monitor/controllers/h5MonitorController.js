@@ -38,15 +38,14 @@ angular.module('H5Monitor_App', ['ngStorage','ngDialog'])
         
         $scope.showLargeScreenShot = function () {
             //if (angular.isDefined(pollTimer)) return;
-            //Lightbox.openModal($scope.imageSrc);
+            Lightbox.openModal($scope.largeImageUrl, $index);
             pollTimer = $interval(function () {
                 $scope.doShowLargeScreenShot();
             }, 3000);
         }
 
         $scope.drawImage = function (imageData) {
-            var img = document.getElementById("screen_shot_image");
-            img.src = "data:image/png;base64," + imageData;
+            $scope.imageUrl = "data:image/png;base64," + imageData;
         }
 
         $scope.doShowScreenShot = function () {
@@ -64,7 +63,7 @@ angular.module('H5Monitor_App', ['ngStorage','ngDialog'])
             $http.get(url).then(function (response) {
                 if (response.data) {
                     var imageData = response.data.imageData;
-                    $scope.imageSrc = "data:image/png;base64," + imageData;
+                    $scope.largeImageUrl = [ "data:image/png;base64," + imageData, ];
                 }
             });
         }

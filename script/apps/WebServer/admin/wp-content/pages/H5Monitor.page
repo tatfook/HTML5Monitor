@@ -16,7 +16,7 @@ wp_enqueue_script("ngDialog",                   "/wp-includes/js/ngDialog.min.js
 wp_enqueue_style("ngDialogcss",                 "/wp-admin/css/ngDialog.min.css");
 wp_enqueue_style("ngDialog-theme-default",      "/wp-admin/css/ngDialog-theme-default.min.css");
 wp_enqueue_style("ngDialog-theme-plain",	    "/wp-admin/css/ngDialog-theme-plain.min.css");
-wp_enqueue_script("bootstrapLightbox",          "/wp-includes/js/angular-bootstrap-lightbox.min.js");
+wp_enqueue_script("Lightbox",                   "/wp-includes/js/angular-bootstrap-lightbox.min.js");
 wp_enqueue_style("lightboxcss",                 "/wp-admin/css/angular-bootstrap-lightbox.min.css");
 
 wp_enqueue_script("H5Monitor_App",			    "/wp-content/pages/h5monitor/app.js");
@@ -31,6 +31,7 @@ local H5MonitorClient = commonlib.gettable("Mod.HTML5Monitor.H5MonitorClient");
 local H5MonitorServer = commonlib.gettable("Mod.HTML5Monitor.H5MonitorServer");
 
 local string = string;
+local serverSetInfo;
 
 -- can use client side to connect with the specific server
 local function GetServer()
@@ -62,11 +63,11 @@ if(is_ajax()) then
 		H5MonitorClient.Start(tostring(ip),tostring(port));
 		H5MonitorClient.Ping();
 		local ping = H5MonitorClient.GetHandleMsg();
-		LOG.std(nil, "info","main","client side", "server ping status: %s" , tostring(ping.pingSuccess));
-		if(ping.pingSuccess) then 
+		LOG.std(nil, "info","client side ping status info", "server ping status: %s" , tostring(ping.pingSuccess));
+		--if(ping.pingSuccess) then 
 			wp_send_json({status = 0}, true);
 			H5MonitorClient.Response();
-		end
+		--end
     end)
 
 -- server side, 
@@ -82,7 +83,10 @@ if(is_ajax()) then
 
 -- server side,
 	add_action('wp_ajax_monitor_show_large_screen_shot', function()
-		H5MonitorServer.SetScreenShotInfo(true);
+		if(not serverSetInfo) then
+			H5MonitorServer.SetScreenShotInfo(true);
+			serverSetInfo = true;
+		end
 		local largeScreenShot = H5MonitorServer.GetHandleMsg();
 		wp_send_json(largeScreenShot,true);
 	end)

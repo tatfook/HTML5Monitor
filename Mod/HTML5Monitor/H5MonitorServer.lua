@@ -73,7 +73,7 @@ function H5MonitorServer.SetScreenShotInfo(is_large)
 		height = 512; 
 	end
 	local imageInfo = {width = width, height = height};
-	LOG.std(nil, "info","setScreenShotInfo" ,"width:%s, height: %s", width, height);
+	LOG.std(nil, "info", "server SetScreenShotInfo" ,"width:%s, height: %s", width, height);
 	H5MonitorServer.Send(imageInfo);
 end
 
@@ -87,7 +87,7 @@ function H5MonitorServer.Ping()
 	serverPingTimer = commonlib.Timer:new({callbackFunc = function(timer)
 		local serverStatus = H5MonitorServer.GetHandleMsg();
 		H5MonitorServer.Send({ping = true});
-		LOG.std(nil, "info", "status", "server ping status: %s" ,tostring(serverStatus.pingSuccess));
+		LOG.std(nil, "info","server status", "server ping status: %s" ,tostring(serverStatus.pingSuccess));
 		if(serverStatus.pingSuccess) then
 			serverPingTimer:Change();
 		end
@@ -103,7 +103,7 @@ local function activate()
 		H5MonitorServer.handle_msgs = msg;	
 		if(msg.ping) then
 			H5MonitorServer.Send({pingSuccess = true});
-			LOG.std(nil, "info","server side", "client ping status: %s" ,tostring(msg.ping));
+			LOG.std(nil, "info","server", "client ping status: %s" ,tostring(msg.ping));
 		end
 		LOG.std(nil, "info", "H5MonitorServer", "got a message");
 	end

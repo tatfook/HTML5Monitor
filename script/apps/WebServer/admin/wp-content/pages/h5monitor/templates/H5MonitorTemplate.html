@@ -10,7 +10,7 @@
 
 <div class="row">
 	<input type="image" id="add_new_client" ng-click="addNewClient()" src="wp-includes/img/add_new_client.png" />
-	<a ng-click="showLargeScreenShot()"> <img id="screen_shot_image" ng-mouseover="showScreenShotInfo()"/> </a>
+	<a ng-click="showLargeScreenShot()"> <img ng-src="{{imageUrl}}" ng-mouseover="showScreenShotInfo()"/> </a>
 </div>
 
 
