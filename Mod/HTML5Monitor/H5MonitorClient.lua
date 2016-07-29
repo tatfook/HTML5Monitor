@@ -123,13 +123,13 @@ function H5MonitorClient.Response()
 end
 
 function H5MonitorClient.Ping() 
-	local clientStatus = H5MonitorClient.GetHandleMsg();
 	local clientPingTimer;
 	clientPingTimer = commonlib.Timer:new({callbackFunc = function(timer)
+		local clientStatus = H5MonitorClient.GetHandleMsg();
 		H5MonitorClient.Send({ping = true});
-		LOG.std(nil, "info","client ping" ,"ping");
+		LOG.std(nil, "info", "status","client ping status: %s" ,tostring(clientStatus.pingSuccess));
 		if(clientStatus.pingSuccess) then
-			clientPingTimer:Change()
+			clientPingTimer:Change();
 		end
 	end})
 	clientPingTimer:Change(0, 500);
@@ -137,13 +137,14 @@ end
 
 local function activate()
 	if(msg)then
+		H5MonitorClient.handle_msgs = msg;
 		if(msg.width and msg.height) then
 			H5MonitorClient.Response();
 		elseif (msg.ping) then
 			H5MonitorClient.Send({pingSuccess = true});
+			LOG.std(nil, "info","client side", "server ping status: %s" , tostring(msg.ping));
 		end
 		LOG.std(nil, "info", "H5MonitorClient", "got a message");
-		H5MonitorClient.handle_msgs = msg;
 	end
 end
 NPL.this(activate)

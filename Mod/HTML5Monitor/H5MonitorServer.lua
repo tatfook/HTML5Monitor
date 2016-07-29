@@ -83,12 +83,12 @@ function H5MonitorServer.Response()
 end
 
 function H5MonitorServer.Ping()
-	local serverStatus = H5MonitorServer.GetHandleMsg();
 	local serverPingTimer; 
 	serverPingTimer = commonlib.Timer:new({callbackFunc = function(timer)
+		local serverStatus = H5MonitorServer.GetHandleMsg();
 		H5MonitorServer.Send({ping = true});
-		LOG.std(nil, "info","server ping" ,"ping");
-		if(status.pingSuccess) then
+		LOG.std(nil, "info", "status", "server ping status: %s" ,tostring(serverStatus.pingSuccess));
+		if(serverStatus.pingSuccess) then
 			serverPingTimer:Change();
 		end
 	end})
@@ -97,15 +97,17 @@ end
 
 
 local function activate()
-	if(not msg.nid)then
+	if(msg) then
 		LOG.std(nil, "info", "H5MonitorServer", "accept");
-		NPL.accept(msg.tid, nid);	
+		NPL.accept(msg.tid, nid);
+		H5MonitorServer.handle_msgs = msg;	
 		if(msg.ping) then
 			H5MonitorServer.Send({pingSuccess = true});
+			LOG.std(nil, "info","server side", "client ping status: %s" ,tostring(msg.ping));
 		end
+		LOG.std(nil, "info", "H5MonitorServer", "got a message");
 	end
-	LOG.std(nil, "info", "H5MonitorServer", "got a message");
-	H5MonitorServer.handle_msgs = msg;
+	
 end
 
 function H5MonitorServer.StartLocalWebServer(host,port)

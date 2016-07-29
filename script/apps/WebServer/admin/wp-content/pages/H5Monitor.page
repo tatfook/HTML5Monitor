@@ -62,9 +62,10 @@ if(is_ajax()) then
 		H5MonitorClient.Start(tostring(ip),tostring(port));
 		H5MonitorClient.Ping();
 		local ping = H5MonitorClient.GetHandleMsg();
+		LOG.std(nil, "info","main","client side", "server ping status: %s" , tostring(ping.pingSuccess));
 		if(ping.pingSuccess) then 
-			H5MonitorClient.Response();
 			wp_send_json({status = 0}, true);
+			H5MonitorClient.Response();
 		end
     end)
 
@@ -89,7 +90,7 @@ if(is_ajax()) then
 -- server side,	
 	add_action('wp_ajax_monitor_show_screen_shot', function()	
 		local screenShot = H5MonitorServer.GetHandleMsg();
-		if(screenShot.imageData) then
+		if(screenShot) then
 			wp_send_json(screenShot, true);
 		else
 			wp_send_json({},true);
