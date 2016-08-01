@@ -24,7 +24,7 @@ NPL.load("(gl)script/ide/System/Encoding/base64.lua");
 local H5MonitorClient = commonlib.gettable("Mod.HTML5Monitor.H5MonitorClient");
 local Encoding = commonlib.gettable("System.Encoding");
 local rts_name = "h5monitor_worker";
-local nid = "h5monitorserver";
+-- local nid = H5MonitorClient.GetNid();
 local client_file = "Mod/HTML5Monitor/H5MonitorClient.lua";
 local server_file = "Mod/HTML5Monitor/H5MonitorServer.lua";
 H5MonitorClient.handle_msgs = nil;
@@ -34,6 +34,19 @@ function H5MonitorClient.AddPublicFiles()
     NPL.AddPublicFile(client_file, 7001);
     NPL.AddPublicFile(server_file, 7002);
 end
+
+-- clousre to make an unique nid
+function H5MonitorClient.GetNid()
+	local i = 0
+	return function()
+		i = i + 1;
+		local nid = "stu" .. i
+		return nid;
+	end
+end
+local getnid = H5MonitorClient.GetNid();
+local nid = getnid();
+
 
 function H5MonitorClient.Start(host,port)
     H5MonitorClient.AddPublicFiles();
@@ -55,6 +68,7 @@ function H5MonitorClient.Start(host,port)
 end
 function H5MonitorClient.Stop()
 end
+
 function H5MonitorClient.Send(msg,is_first)
 	if(not is_first)then
 		msg.nid = nid;
@@ -122,6 +136,7 @@ function H5MonitorClient.Response()
 	clientSendTimer:Change(0,3000);
 end
 
+-- test if connected after connecting before sending
 function H5MonitorClient.Ping() 
 	local clientPingTimer;
 	clientPingTimer = commonlib.Timer:new({callbackFunc = function(timer)
@@ -137,6 +152,8 @@ end
 
 local function activate()
 	if(msg)then
+		LOG.std(nil, "info", "H5MonitorClient", "accept");
+		NPL.accept(msg.tid, nid);
 		H5MonitorClient.handle_msgs = msg;
 		if(msg.width and msg.height) then
 			H5MonitorClient.Response();

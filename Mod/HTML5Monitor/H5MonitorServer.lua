@@ -22,7 +22,7 @@ NPL.load("(gl)script/ide/commonlib.lua");
 NPL.load("(gl)script/ide/timer.lua");
 local H5MonitorServer = commonlib.gettable("Mod.HTML5Monitor.H5MonitorServer");
 local rts_name = "h5monitor_worker";
-local nid = "stu1";
+-- local nid = H5MonitorServer.GetNid();
 local client_file = "Mod/HTML5Monitor/H5MonitorClient.lua";
 local server_file = "Mod/HTML5Monitor/H5MonitorServer.lua";
 H5MonitorServer.handle_msgs = nil;
@@ -30,6 +30,20 @@ function H5MonitorServer.AddPublicFiles()
     NPL.AddPublicFile(client_file, 7001);
     NPL.AddPublicFile(server_file, 7002);
 end
+
+-- clousre to make an unique nid
+function H5MonitorServer.GetNid()
+	local i = 0
+	return function()
+		i = i + 1;
+		local nid = "stu" .. i
+		return nid;
+	end
+end
+
+local getnid = H5MonitorServer.GetNid();
+local nid = getnid();
+
 function H5MonitorServer.Start(host,port)
     H5MonitorServer.AddPublicFiles();
 	host= host or "127.0.0.1";
@@ -82,6 +96,7 @@ function H5MonitorServer.Response()
 
 end
 
+-- test if connected after connecting before sending
 function H5MonitorServer.Ping()
 	local serverPingTimer; 
 	serverPingTimer = commonlib.Timer:new({callbackFunc = function(timer)
@@ -92,7 +107,7 @@ function H5MonitorServer.Ping()
 			serverPingTimer:Change();
 		end
 	end})
-	serverPingTimer:Change(0, 500);
+	serverPingTimer:Change(500, 500);
 end
 
 

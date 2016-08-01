@@ -1,7 +1,7 @@
-angular.module('H5Monitor_App', ['ngStorage','ngDialog'])
+angular.module('H5Monitor_App', ['ngStorage', 'ngDialog', 'bootstrapLightbox'])
 .component("monitor", {
     templateUrl: "/wp-content/pages/h5monitor/templates/H5MonitorTemplate.html",
-    controller: function ($scope, $http, $interval, ngDialog) {
+    controller: function ($scope, $http, $interval, ngDialog, Lightbox) {
         if (Page)
             Page.ShowSideBar(false);
         var pollTimer;
