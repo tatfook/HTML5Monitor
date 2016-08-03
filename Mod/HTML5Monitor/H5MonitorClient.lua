@@ -2,6 +2,7 @@
 Title: H5MonitorClient
 Author(s): leio  
 Date: 2016/7/20
+Revised: MarxWolf 2016/07/23
 Desc: 
 use the lib:
 ------------------------------------------------------------
@@ -45,7 +46,7 @@ function H5MonitorClient.GetNid()
 	end
 end
 local getnid = H5MonitorClient.GetNid();
-local nid = getnid();
+local nid = "stu1";
 
 
 function H5MonitorClient.Start(host,port)
@@ -58,7 +59,7 @@ function H5MonitorClient.Start(host,port)
 	
 	host = tostring(host);
 	port = tostring(port);
-
+	-- nid = getnid();
 	local params = {host = host, port = port, nid = nid};
 	-- add the server address
 	NPL.AddNPLRuntimeAddress(params);
@@ -147,12 +148,13 @@ function H5MonitorClient.Ping()
 			clientPingTimer:Change();
 		end
 	end})
-	clientPingTimer:Change(500, 500);
+	clientPingTimer:Change(0, 100);
 end
 
 local function activate()
 	if(msg)then
-		LOG.std(nil, "info", "H5MonitorClient", "accept");
+		-- LOG.std(nil, "info", "H5MonitorClient", "accept");
+		LOG.std(nil, "info", "H5MonitorClient", "got a message");
 		NPL.accept(msg.tid, nid);
 		H5MonitorClient.handle_msgs = msg;
 		if(msg.width and msg.height) then
@@ -160,8 +162,9 @@ local function activate()
 		elseif (msg.ping) then
 			H5MonitorClient.Send({pingSuccess = true});
 			LOG.std(nil, "info","client", "server ping status: %s" , tostring(msg.ping));
+		elseif(msg.pingSuccess) then
+			H5MonitorClient.Response();
 		end
-		LOG.std(nil, "info", "H5MonitorClient", "got a message");
 	end
 end
 NPL.this(activate)

@@ -36,9 +36,9 @@ angular.module('H5Monitor_App', ['ngStorage', 'ngDialog', 'bootstrapLightbox'])
             }, 3000);
         }
         
-        $scope.showLargeScreenShot = function () {
+        $scope.showLargeScreenShot = function (index) {
             //if (angular.isDefined(pollTimer)) return;
-            Lightbox.openModal($scope.largeImageUrl, $index);
+            Lightbox.openModal($scope.largeImages, index);
             pollTimer = $interval(function () {
                 $scope.doShowLargeScreenShot();
             }, 3000);
@@ -63,7 +63,7 @@ angular.module('H5Monitor_App', ['ngStorage', 'ngDialog', 'bootstrapLightbox'])
             $http.get(url).then(function (response) {
                 if (response.data) {
                     var imageData = response.data.imageData;
-                    $scope.largeImageUrl = [ "data:image/png;base64," + imageData, ];
+                    $scope.largeImages = [ { 'url': "data:image/png;base64," + imageData, }, ];
                 }
             });
         }
@@ -71,7 +71,7 @@ angular.module('H5Monitor_App', ['ngStorage', 'ngDialog', 'bootstrapLightbox'])
         $scope.showScreenShotInfo = function () {
             var url = "ajax/H5Monitor?action=monitor_show_screen_shot_info";
             $http.get(url).then(function (response) {
-
+                $scope.screenShotInfo = response.data.remoteIP;
             });
         }
 
