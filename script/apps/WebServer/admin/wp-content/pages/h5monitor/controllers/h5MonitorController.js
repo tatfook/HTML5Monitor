@@ -1,7 +1,7 @@
-angular.module('H5Monitor_App', ['ngStorage', 'ngDialog', 'bootstrapLightbox'])
+angular.module('H5Monitor_App', ['ngStorage', 'ngDialog'])
 .component("monitor", {
     templateUrl: "/wp-content/pages/h5monitor/templates/H5MonitorTemplate.html",
-    controller: function ($scope, $http, $interval, ngDialog, Lightbox) {
+    controller: function ($scope, $http, $interval, ngDialog) {
         if (Page)
             Page.ShowSideBar(false);
         var pollTimer;
@@ -25,7 +25,7 @@ angular.module('H5Monitor_App', ['ngStorage', 'ngDialog', 'bootstrapLightbox'])
             var url = "ajax/H5Monitor?action=monitor_server_start&client=" + client;
             ngDialog.close("addNewClientDialogID");
             $http.get(url).then(function (response) {
-                $scope.showScreenShot();
+               // $scope.showScreenShot();
             });
         }
 
@@ -36,9 +36,13 @@ angular.module('H5Monitor_App', ['ngStorage', 'ngDialog', 'bootstrapLightbox'])
             }, 3000);
         }
         
-        $scope.showLargeScreenShot = function (index) {
+        $scope.showLargeScreenShot = function () {
             //if (angular.isDefined(pollTimer)) return;
-            Lightbox.openModal($scope.largeImages, index);
+            ngDialog.open({
+                id: 'showLargeScreenShotDialogID',
+                template: 'showLargeScreenShotDialog', className: 'ngdialog-theme-plain',
+                scope: $scope,
+            }); 
             pollTimer = $interval(function () {
                 $scope.doShowLargeScreenShot();
             }, 3000);
@@ -46,6 +50,10 @@ angular.module('H5Monitor_App', ['ngStorage', 'ngDialog', 'bootstrapLightbox'])
 
         $scope.drawImage = function (imageData) {
             $scope.imageUrl = "data:image/png;base64," + imageData;
+        }
+
+        $scope.drawLargeImage = function (imageData) {
+            $scope.largeImageUrl = "data:image/png;base64," + imageData;
         }
 
         $scope.doShowScreenShot = function () {
@@ -63,7 +71,7 @@ angular.module('H5Monitor_App', ['ngStorage', 'ngDialog', 'bootstrapLightbox'])
             $http.get(url).then(function (response) {
                 if (response.data) {
                     var imageData = response.data.imageData;
-                    $scope.largeImages = [ { 'url': "data:image/png;base64," + imageData, }, ];
+                    $scope.drawLargeImage(imageData);
                 }
             });
         }

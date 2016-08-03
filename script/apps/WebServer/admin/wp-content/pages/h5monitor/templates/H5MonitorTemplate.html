@@ -18,10 +18,9 @@
 			<input type="image" id="add_new_client" ng-click="addNewClient()" src="wp-includes/img/add_new_client.png" />
 		</div>
 
-				<div class="col-md-4 col-lg-3">
-					<a ng-click="showLargeScreenShot($index)"> <img ng-src="{{imageUrl}}"  ng-mouseover="showScreenShotInfo()"/> </a>
-				</div>
-
+		<div class="col-md-4 col-lg-3">
+			<a ng-click="showLargeScreenShot()"> <img ng-src="{{imageUrl}}"  ng-mouseover="showScreenShotInfo()"/> </a>
+		</div>
 	</div>
 </div>
 
@@ -46,5 +45,12 @@
 		<div class="ngdialog-buttons">
 			<button ng-click="doServerStart()" class="ngdialog-button ngdialog-button-primary">Connect</button>	
 		</div>
+	</div>
+</script>
+
+
+<script type="text/ng-template" id="showLargeScreenShotDialog">
+	<div class="ngdialog-message">
+		<img ng-src="{{largeImageUrl}}" />
 	</div>
 </script>

@@ -84,8 +84,8 @@ end
 function H5MonitorServer.SetScreenShotInfo(is_large)
 	local width, height = 256, 256;
 	if (is_large) then
-		width = 512;  -- need to be replaced by the screen info
-		height = 512; 
+		width = 400;  -- need to be replaced by the screen info
+		height = 400; 
 	end
 	local imageInfo = {width = width, height = height};
 	LOG.std(nil, "info", "server SetScreenShotInfo" ,"width:%s, height: %s", width, height);
