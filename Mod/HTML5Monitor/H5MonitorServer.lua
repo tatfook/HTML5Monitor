@@ -27,6 +27,7 @@ local rts_name = "h5monitor_worker";
 local client_file = "Mod/HTML5Monitor/H5MonitorClient.lua";
 local server_file = "Mod/HTML5Monitor/H5MonitorServer.lua";
 H5MonitorServer.handle_msgs = nil;
+
 function H5MonitorServer.AddPublicFiles()
     NPL.AddPublicFile(client_file, 7001);
     NPL.AddPublicFile(server_file, 7002);
@@ -121,6 +122,7 @@ local function activate()
 		if(msg.ping) then
 			H5MonitorServer.Send({pingSuccess = true});
 			LOG.std(nil, "info","server", "client ping status: %s" ,tostring(msg.ping));
+			
 		elseif(msg.pingSuccess) then
 			H5MonitorServer.SetScreenShotInfo();
 		end

@@ -29,6 +29,7 @@ local rts_name = "h5monitor_worker";
 local client_file = "Mod/HTML5Monitor/H5MonitorClient.lua";
 local server_file = "Mod/HTML5Monitor/H5MonitorServer.lua";
 H5MonitorClient.handle_msgs = nil;
+
 local imageFile = "temp/monitor_screenshot.png";
 local is_login = false;
 function H5MonitorClient.AddPublicFiles()
@@ -130,11 +131,12 @@ end
 
 -- client side, when get image info from server, send imageData to server
 function H5MonitorClient.Response()
-	local clientSendTimer = commonlib.Timer:new({callbackFunc = function(timer)
+	if(H5MonitorClient.clientSendTimer) then return end;
+	H5MonitorClient.clientSendTimer = commonlib.Timer:new({callbackFunc = function(timer)
 			local imageData = H5MonitorClient.GetScreenShot();
 			H5MonitorClient.Send(imageData);
 	end})
-	clientSendTimer:Change(0,3000);
+	H5MonitorClient.clientSendTimer:Change(0,3000);
 end
 
 -- test if connected after connecting before sending
@@ -157,13 +159,13 @@ local function activate()
 		LOG.std(nil, "info", "H5MonitorClient", "got a message");
 		NPL.accept(msg.tid, nid);
 		H5MonitorClient.handle_msgs = msg;
-		if(msg.width and msg.height) then
+		if(msg.pingSuccess or (msg.width and msg.height)) then
 			H5MonitorClient.Response();
+
 		elseif (msg.ping) then
 			H5MonitorClient.Send({pingSuccess = true});
 			LOG.std(nil, "info","client", "server ping status: %s" , tostring(msg.ping));
-		elseif(msg.pingSuccess) then
-			H5MonitorClient.Response();
+			
 		end
 	end
 end
