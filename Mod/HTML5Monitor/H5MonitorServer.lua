@@ -122,7 +122,6 @@ local function activate()
 		if(msg.ping) then
 			H5MonitorServer.Send({pingSuccess = true});
 			LOG.std(nil, "info","server", "client ping status: %s" ,tostring(msg.ping));
-			
 		elseif(msg.pingSuccess) then
 			H5MonitorServer.SetScreenShotInfo();
 		end

@@ -33,7 +33,8 @@ local H5MonitorClient = commonlib.gettable("Mod.HTML5Monitor.H5MonitorClient");
 local H5MonitorServer = commonlib.gettable("Mod.HTML5Monitor.H5MonitorServer");
 
 local string = string;
-local serverSetInfo;
+local tostring = tostring;
+local tonumber = tonumber;
 
 -- can use client side to connect with the specific server
 local function GetServer()
@@ -61,7 +62,7 @@ if(is_ajax()) then
 		local ip, port = GetServer();
 		H5MonitorClient.Start(tostring(ip),tostring(port));
 		H5MonitorClient.Ping();
-		wp_send_json({}, true);
+		wp_send_json({status = 0}, true);
     end)
 
 -- server side, 
@@ -73,16 +74,20 @@ if(is_ajax()) then
 
 -- server side,
 	add_action('wp_ajax_monitor_show_large_screen_shot', function()
-		if(not serverSetInfo) then
+		local largeScreenShotCounter = request:get("largeScreenShotCounter");
+		if(tonumber(largeScreenShotCounter) == 0) then
 			H5MonitorServer.SetScreenShotInfo(true);
-			serverSetInfo = true;
 		end
 		local largeScreenShot = H5MonitorServer.GetHandleMsg();
 		wp_send_json(largeScreenShot,true);
 	end)
 
 -- server side,	
-	add_action('wp_ajax_monitor_show_screen_shot', function()	
+	add_action('wp_ajax_monitor_show_screen_shot', function()
+		local screenShotCounter = request:get("screenShotCounter");
+		if(tonumber(screenShotCounter) == 0) then
+			H5MonitorServer.SetScreenShotInfo();
+		end
 		local screenShot = H5MonitorServer.GetHandleMsg();
 		wp_send_json(screenShot, true);
     end)

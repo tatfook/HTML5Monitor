@@ -4,7 +4,9 @@ angular.module('H5Monitor_App', ['ngStorage', 'ngDialog'])
     controller: function ($scope, $http, $interval, ngDialog) {
         if (Page)
             Page.ShowSideBar(false);
-        var pollTimer;
+
+        var screenShotTimer;
+        var largeScreenShotTimer;
 
         $scope.doClientStart = function () {
             var server = $("#server").val();
@@ -30,21 +32,37 @@ angular.module('H5Monitor_App', ['ngStorage', 'ngDialog'])
         }
 
         $scope.showScreenShot = function () {
-            if (angular.isDefined(pollTimer)) return;
-            pollTimer = $interval(function () {
+            if (angular.isDefined(screenShotTimer)) return;
+            if (angular.isDefined(largeScreenShotTimer)) {
+                $interval.cancel(largeScreenShotTimer);
+                largeScreenShotTimer = undefined;
+            }
+            $scope.screenShotCounter = 0;
+            screenShotTimer = $interval(function () {
                 $scope.doShowScreenShot();
+                $scope.screenShotCounter = $scope.screenShotCounter + 1;
             }, 3000);
         }
         
         $scope.showLargeScreenShot = function () {
-            //if (angular.isDefined(pollTimer)) return;
+            if (angular.isDefined(largeScreenShotTimer)) return;
+            if (angular.isDefined(screenShotTimer)) {
+                $interval.cancel(screenShotTimer);
+                screenShotTimer = undefined;
+            }
+            $scope.largeScreenShotCounter = 0;
             ngDialog.open({
                 id: 'showLargeScreenShotDialogID',
                 template: 'showLargeScreenShotDialog', className: 'ngdialog-theme-plain',
                 scope: $scope,
+                preCloseCallback: function (value) {
+                    $scope.showScreenShot();
+                    return true;
+                }
             }); 
-            pollTimer = $interval(function () {
+            largeScreenShotTimer = $interval(function () {
                 $scope.doShowLargeScreenShot();
+                $scope.largeScreenShotCounter = $scope.largeScreenShotCounter + 1;
             }, 3000);
         }
 
@@ -57,7 +75,7 @@ angular.module('H5Monitor_App', ['ngStorage', 'ngDialog'])
         }
 
         $scope.doShowScreenShot = function () {
-            var url = "ajax/H5Monitor?action=monitor_show_screen_shot";
+            var url = "ajax/H5Monitor?action=monitor_show_screen_shot&screenShotCounter=" + $scope.screenShotCounter;
             $http.get(url).then(function (response) {
                 if (response.data) {
                     var imageData = response.data.imageData;
@@ -67,7 +85,7 @@ angular.module('H5Monitor_App', ['ngStorage', 'ngDialog'])
         }
 
         $scope.doShowLargeScreenShot = function () {
-            var url = "ajax/H5Monitor?action=monitor_show_large_screen_shot";
+            var url = "ajax/H5Monitor?action=monitor_show_large_screen_shot&largeScreenShotCounter=" + $scope.largeScreenShotCounter;
             $http.get(url).then(function (response) {
                 if (response.data) {
                     var imageData = response.data.imageData;
