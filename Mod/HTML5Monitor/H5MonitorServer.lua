@@ -44,7 +44,7 @@ function H5MonitorServer.GetNid()
 end
 
 local getnid = H5MonitorServer.GetNid();
-local nid = "student1";
+local nid;
 
 function H5MonitorServer.Start(host,port)
     H5MonitorServer.AddPublicFiles();
@@ -117,7 +117,10 @@ local function activate()
 	if(msg) then
 		-- LOG.std(nil, "info", "H5MonitorServer", "accept");
 		LOG.std(nil, "info", "H5MonitorServer", "got a message");
-		NPL.accept(msg.tid, nid);
+		if(msg.tid) then
+			nid = getnid();
+			NPL.accept(msg.tid, nid);
+		end
 		H5MonitorServer.handle_msgs = msg;	
 		if(msg.ping) then
 			H5MonitorServer.Send({pingSuccess = true});
