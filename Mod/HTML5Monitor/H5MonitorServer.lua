@@ -44,7 +44,7 @@ function H5MonitorServer.GetNid()
 end
 
 local getnid = H5MonitorServer.GetNid();
-local nid;
+local nid="student0";
 
 function H5MonitorServer.Start(host,port)
     H5MonitorServer.AddPublicFiles();
