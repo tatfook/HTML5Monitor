@@ -21,7 +21,7 @@ H5MonitorServer.Send({"hello world 111"});
 ]]
 NPL.load("(gl)script/ide/commonlib.lua"); 
 NPL.load("(gl)script/ide/timer.lua");
-NPL.Load("(gl)script/ide/STL/ArrayMap.lua");
+
 local H5MonitorServer = commonlib.gettable("Mod.HTML5Monitor.H5MonitorServer");
 local rts_name = "h5monitor_worker";
 -- local nid = H5MonitorServer.GetNid();
@@ -30,8 +30,8 @@ local server_file = "Mod/HTML5Monitor/H5MonitorServer.lua";
 local table_insert = table.insert;
 H5MonitorServer.handle_msgs = nil;
 H5MonitorServer.handle_msgsIP = nil;
-H5MonitorServer.msgQueue = commonlib.ArrayMap:new();
-H5MonitorServer.IPQueue = commonlib.ArrayMap:new();
+H5MonitorServer.msgQueue = {};
+H5MonitorServer.IPQueue = {};
 
 function H5MonitorServer.AddPublicFiles()
     NPL.AddPublicFile(client_file, 7001);
@@ -126,21 +126,21 @@ end
 
 function H5MonitorServer.SortMsgQueue()
 	local msgQueue = {};
-	local iplength = #H5MonitorServer.IPQueue;
+	local iplength = #(H5MonitorServer.IPQueue);
 	for i in iplength do
 		local msgData = H5MonitorServer.msgQueue[H5MonitorServer.IPQueue[i]];
 		if(msgData) then 
 			table_insert(msgQueue, msgData);
 		end
 	end
-	return 	msgQueue;
+	H5MonitorServer.msgQueue = msgQueue;
+	return H5MonitorServer.msgQueue;
 end
 
 function H5MonitorServer.ClearMsgQueue()
 	local clearMsgQueueTimer;
 	clearMsgQueueTimer = commonlib.Timer:new({callbackFunc = function(timer)
-		H5MonitorServer.msgQueue = H5MonitorServer.SortMsgQueue();
-		H5MonitorServer.msgQueue:clear();
+		H5MonitorServer.msgQueue = nil;
 	end})
 
 	-- time interval need to be thought again
