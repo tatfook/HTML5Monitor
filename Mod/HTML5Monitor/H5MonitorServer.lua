@@ -112,11 +112,13 @@ function H5MonitorServer.GetIPQueue(ip)
 	table_insert(H5MonitorServer.IPQueue, ip);
 end
 
+-- get msg queue every specific time interval(now is 100ms) and index the imageData using IP
 function H5MonitorServer.GetMsgQueue()
 	local getMsgQueueTimer;
 	getMsgQueueTimer = commonlib.Timer:new({callbackFunc = function(timer)
 		local msgs, msgsIP = H5MonitorServer.GetHandleMsg();
-		if(msgs.imageData) then
+		local contain = H5MonitorServer.msgQueue[msgsIP];
+		if(not contatin and msgs.imageData) then
 			H5MonitorServer.msgQueue[msgsIP] = msgs.imageData;
 		end
 	end})
@@ -124,6 +126,7 @@ function H5MonitorServer.GetMsgQueue()
 	getMsgQueueTimer:Change(0,100);
 end
 
+-- sort msg queue according to their connection order using IP queue
 function H5MonitorServer.SortMsgQueue()
 	local msgQueue = {};
 	local iplength = #(H5MonitorServer.IPQueue);
@@ -137,6 +140,7 @@ function H5MonitorServer.SortMsgQueue()
 	return H5MonitorServer.msgQueue;
 end
 
+-- clear msg queue every specific time interval(now is 3000ms)
 function H5MonitorServer.ClearMsgQueue()
 	local clearMsgQueueTimer;
 	clearMsgQueueTimer = commonlib.Timer:new({callbackFunc = function(timer)
