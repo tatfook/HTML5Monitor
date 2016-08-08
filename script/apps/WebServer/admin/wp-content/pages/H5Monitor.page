@@ -20,11 +20,8 @@ wp_enqueue_style("ngDialogcss",                 "/wp-admin/css/ngDialog.min.css"
 wp_enqueue_style("ngDialog-theme-default",      "/wp-admin/css/ngDialog-theme-default.min.css");
 wp_enqueue_style("ngDialog-theme-plain",	    "/wp-admin/css/ngDialog-theme-plain.min.css");
 
-
 wp_enqueue_script("H5Monitor_App",			    "/wp-content/pages/h5monitor/app.js");
 wp_enqueue_script("h5MonitorController",		"/wp-content/pages/h5monitor/controllers/h5MonitorController.js");
-
-
 
 NPL.load("(gl)Mod/HTML5Monitor/H5MonitorClient.lua");
 NPL.load("(gl)Mod/HTML5Monitor/H5MonitorServer.lua");
@@ -53,6 +50,7 @@ local function GetClient()
 	LOG.std(nil, "info", "clientInfo","ip:%s, port: %s", ip, port);
 	return ip, port;
 end
+
 
 
 if(is_ajax()) then

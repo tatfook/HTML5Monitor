@@ -21,12 +21,17 @@ H5MonitorServer.Send({"hello world 111"});
 ]]
 NPL.load("(gl)script/ide/commonlib.lua"); 
 NPL.load("(gl)script/ide/timer.lua");
+NPL.Load("(gl)script/ide/STL/ArrayMap.lua");
 local H5MonitorServer = commonlib.gettable("Mod.HTML5Monitor.H5MonitorServer");
 local rts_name = "h5monitor_worker";
 -- local nid = H5MonitorServer.GetNid();
 local client_file = "Mod/HTML5Monitor/H5MonitorClient.lua";
 local server_file = "Mod/HTML5Monitor/H5MonitorServer.lua";
+local table_insert = table.insert;
 H5MonitorServer.handle_msgs = nil;
+H5MonitorServer.handle_msgsIP = nil;
+H5MonitorServer.msgQueue = commonlib.ArrayMap:new();
+H5MonitorServer.IPQueue = commonlib.ArrayMap:new();
 
 function H5MonitorServer.AddPublicFiles()
     NPL.AddPublicFile(client_file, 7001);
@@ -44,7 +49,7 @@ function H5MonitorServer.GetNid()
 end
 
 local getnid = H5MonitorServer.GetNid();
-local nid="student0";
+local nid;
 
 function H5MonitorServer.Start(host,port)
     H5MonitorServer.AddPublicFiles();
@@ -53,6 +58,7 @@ function H5MonitorServer.Start(host,port)
 	
 	host = tostring(host);
 	port = tostring(port);
+	nid = getnid();
 	-- nid = getnid();
 	local params = {host = host, port = port, nid = nid};
 	-- add the server address
@@ -73,12 +79,16 @@ function H5MonitorServer.Send(msg)
 end
 
 function H5MonitorServer.GetHandleMsg()
-	return H5MonitorServer.handle_msgs;
+	return H5MonitorServer.handle_msgs, H5MonitorServer.handle_msgsIP;
 end
 
 function H5MonitorServer.GetIP()
 	local remoteIP = NPL.GetIP(msg.nid or msg.tid or nid);
-	return remoteIP;
+	if(remoteIP ~= "") then
+		return remoteIP;
+	else
+		return nil;
+	end
 end
 
 -- @param: is_large, to save bandwidth and time, usually set small size image(nil parameter), when necessary, set large size
@@ -95,7 +105,46 @@ end
 
 -- server side, when receive image info request from client, send image info to client
 function H5MonitorServer.Response()
+	
+end
 
+function H5MonitorServer.GetIPQueue(ip)
+	table_insert(H5MonitorServer.IPQueue, ip);
+end
+
+function H5MonitorServer.GetMsgQueue()
+	local getMsgQueueTimer;
+	getMsgQueueTimer = commonlib.Timer:new({callbackFunc = function(timer)
+		local msgs, msgsIP = H5MonitorServer.GetHandleMsg();
+		if(msgs.imageData) then
+			H5MonitorServer.msgQueue[msgsIP] = msgs.imageData;
+		end
+	end})
+	-- time interval need to be thought again.
+	getMsgQueueTimer:Change(0,100);
+end
+
+function H5MonitorServer.SortMsgQueue()
+	local msgQueue = {};
+	local iplength = #H5MonitorServer.IPQueue;
+	for i in iplength do
+		local msgData = H5MonitorServer.msgQueue[H5MonitorServer.IPQueue[i]];
+		if(msgData) then 
+			table_insert(msgQueue, msgData);
+		end
+	end
+	return 	msgQueue;
+end
+
+function H5MonitorServer.ClearMsgQueue()
+	local clearMsgQueueTimer;
+	clearMsgQueueTimer = commonlib.Timer:new({callbackFunc = function(timer)
+		H5MonitorServer.msgQueue = H5MonitorServer.SortMsgQueue();
+		H5MonitorServer.msgQueue:clear();
+	end})
+
+	-- time interval need to be thought again
+	clearMsgQueueTimer:Change(0,3000);
 end
 
 -- test if connected after connecting before sending
@@ -120,16 +169,18 @@ local function activate()
 		if(msg.tid) then
 			nid = getnid();
 			NPL.accept(msg.tid, nid);
+			local iP = H5MonitorServer.GetIP();
+			H5MonitorServer.GetIPQueue(ip)
 		end
-		H5MonitorServer.handle_msgs = msg;	
+		H5MonitorServer.handle_msgs = msg;
+		H5MonitorServer.handle_msgsIP = H5MonitorServer.GetIP();
 		if(msg.ping) then
 			H5MonitorServer.Send({pingSuccess = true});
 			LOG.std(nil, "info","server", "client ping status: %s" ,tostring(msg.ping));
 		elseif(msg.pingSuccess) then
 			H5MonitorServer.SetScreenShotInfo();
 		end
-	end
-	
+	end	
 end
 
 function H5MonitorServer.StartLocalWebServer(host,port)

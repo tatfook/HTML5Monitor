@@ -165,11 +165,9 @@ local function activate()
 		H5MonitorClient.handle_msgs = msg;
 		if(msg.pingSuccess or (msg.width and msg.height)) then
 			H5MonitorClient.Response();
-
 		elseif (msg.ping) then
 			H5MonitorClient.Send({pingSuccess = true});
 			LOG.std(nil, "info","client", "server ping status: %s" , tostring(msg.ping));
-			
 		end
 	end
 end
