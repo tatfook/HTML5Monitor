@@ -32,6 +32,7 @@ H5MonitorServer.handle_msgs = nil;
 H5MonitorServer.handle_msgsIP = nil;
 H5MonitorServer.msgQueue = {};
 H5MonitorServer.IPQueue = {};
+H5MonitorServer.nidQueue = {};
 
 function H5MonitorServer.AddPublicFiles()
     NPL.AddPublicFile(client_file, 7001);
@@ -144,7 +145,7 @@ end
 function H5MonitorServer.ClearMsgQueue()
 	local clearMsgQueueTimer;
 	clearMsgQueueTimer = commonlib.Timer:new({callbackFunc = function(timer)
-		H5MonitorServer.msgQueue = nil;
+		H5MonitorServer.msgQueue = {};
 	end})
 
 	-- time interval need to be thought again
