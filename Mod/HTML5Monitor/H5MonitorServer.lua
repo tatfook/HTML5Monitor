@@ -72,8 +72,8 @@ end
 function H5MonitorServer.Stop()
 
 end
-function H5MonitorServer.Send(msg)
-	local nid = msg.nid or msg.tid or nid;
+function H5MonitorServer.Send(msg, usernid)
+	local nid = usernid or msg.nid or msg.tid or nid;
 	local res = NPL.activate(string.format("%s:%s", nid, client_file), msg);
 	LOG.std(nil, "info", "H5MonitorServer", "res:%s",tostring(res));
 	return res;
@@ -111,6 +111,10 @@ end
 
 function H5MonitorServer.GetIPQueue(ip)
 	table_insert(H5MonitorServer.IPQueue, ip);
+end
+
+function H5MonitorServer.GetNidQueue(nid)
+	table_insert(H5MoniorServer.nidQueue, nid);
 end
 
 -- get msg queue every specific time interval(now is 100ms) and index the imageData using IP
@@ -166,24 +170,31 @@ function H5MonitorServer.Ping()
 	serverPingTimer:Change(0, 100);
 end
 
+function H5MonitorServer.InitServer()
+	nid = getnid();
+	LOG.std(nil, "info", "H5MonitorServer nid:%s", nid);
+	NPL.accept(msg.tid, nid);
+	local iP = H5MonitorServer.GetIP();
+	H5MonitorServer.GetIPQueue(ip);
+	H5MonitorServer.GetNidQueue(nid);
+end
 
 local function activate()
 	if(msg) then
 		-- LOG.std(nil, "info", "H5MonitorServer", "accept");
 		LOG.std(nil, "info", "H5MonitorServer", "got a message");
 		if(msg.tid) then
-			nid = getnid();
-			NPL.accept(msg.tid, nid);
-			local iP = H5MonitorServer.GetIP();
-			H5MonitorServer.GetIPQueue(ip)
+			H5MonitorServer.InitServer();
 		end
 		H5MonitorServer.handle_msgs = msg;
 		H5MonitorServer.handle_msgsIP = H5MonitorServer.GetIP();
 		if(msg.ping) then
 			H5MonitorServer.Send({pingSuccess = true});
 			LOG.std(nil, "info","server", "client ping status: %s" ,tostring(msg.ping));
-		elseif(msg.pingSuccess) then
+		elseif(tonumber(msg.pingSuccess) == 0) then
 			H5MonitorServer.SetScreenShotInfo();
+			H5MonitorServer.InitServer();
+			LOG.std(nil, "info"," server ", "client pingSuccess status: %s" ,tostring(msg.pingSuccess));
 		end
 	end	
 end

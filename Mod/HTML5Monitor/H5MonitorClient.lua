@@ -49,6 +49,14 @@ end
 local getnid = H5MonitorClient.GetNid();
 local nid = "stu1";
 
+function H5MonitorClient.GetCounter()
+	local i = -1; 
+	return function()
+		i = i + 1;
+		return i;
+	end
+end
+H5MonitorClient.pingCounter = H5MonitorClient.GetCounter();
 
 function H5MonitorClient.Start(host,port)
     H5MonitorClient.AddPublicFiles();
@@ -166,7 +174,8 @@ local function activate()
 		if(msg.pingSuccess or (msg.width and msg.height)) then
 			H5MonitorClient.Response();
 		elseif (msg.ping) then
-			H5MonitorClient.Send({pingSuccess = true});
+			
+			H5MonitorClient.Send({pingSuccess = H5MonitorClient.pingCounter()});
 			LOG.std(nil, "info","client", "server ping status: %s" , tostring(msg.ping));
 		end
 	end
