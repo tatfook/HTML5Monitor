@@ -25,7 +25,6 @@ NPL.load("(gl)script/ide/System/Encoding/base64.lua");
 local H5MonitorClient = commonlib.gettable("Mod.HTML5Monitor.H5MonitorClient");
 local Encoding = commonlib.gettable("System.Encoding");
 local rts_name = "h5monitor_worker";
--- local nid = H5MonitorClient.GetNid();
 local client_file = "Mod/HTML5Monitor/H5MonitorClient.lua";
 local server_file = "Mod/HTML5Monitor/H5MonitorServer.lua";
 H5MonitorClient.handle_msgs = nil;
@@ -104,7 +103,7 @@ function H5MonitorClient.TakeScreenShot(width,height)
 	height = tonumber(height);
 	-- ParaEngine.ForceRender();ParaEngine.ForceRender();
 	if(width and height)then
-		ParaMovie.TakeScreenShot(imageFile,width,height);
+		ParaMovie.TakeScreenShot(imageFile, width, height);
 	else
 		ParaMovie.TakeScreenShot(imageFile);
 	end

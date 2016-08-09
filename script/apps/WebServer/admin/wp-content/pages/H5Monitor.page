@@ -86,6 +86,7 @@ if(is_ajax()) then
 		if(tonumber(screenShotCounter) == 0) then
 			H5MonitorServer.SetScreenShotInfo();
 		end
+		local msgQueue = H5MonitorServer.SortMsgQueue();
 		local screenShot = H5MonitorServer.GetHandleMsg();
 		wp_send_json(screenShot, true);
     end)
