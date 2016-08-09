@@ -17,11 +17,12 @@
 		<div class="col-md-4 col-lg-3">
 			<input type="image" id="add_new_client" ng-click="addNewClient()" src="wp-includes/img/add_new_client.png" />
 		</div>
-
-		<div class="col-md-4 col-lg-3">
-			<a ng-click="showLargeScreenShot()" > 
-				<img width="256" height="256" ng-src="{{imageUrl}}" ng-mouseover="showScreenShotInfo()" title="{{screenShotInfo}}" /> 
-			</a>
+		<div ng-repeat="image in imageArray"> 
+			<div class="col-md-4 col-lg-3">
+				<a ng-click="showLargeScreenShot()" > 
+					<img width="256" height="256" ng-src="data:image/png;base64,{{image}}" ng-mouseover="showScreenShotInfo()" title="screenShotInfo" /> 
+				</a>
+			</div>
 		</div>
 	</div>
 </div>

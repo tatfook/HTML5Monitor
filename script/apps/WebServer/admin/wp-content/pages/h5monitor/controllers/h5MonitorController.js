@@ -78,8 +78,9 @@ angular.module('H5Monitor_App', ['ngStorage', 'ngDialog'])
             var url = "ajax/H5Monitor?action=monitor_show_screen_shot&screenShotCounter=" + $scope.screenShotCounter;
             $http.get(url).then(function (response) {
                 if (response.data) {
-                    var imageData = response.data.imageData;
-                    $scope.drawImage(imageData);
+                    $scope.imageArray = response.data;
+                    //var imageData = response.data.imageData;
+                    //$scope.drawImage(imageData);
                 }
             });
         }

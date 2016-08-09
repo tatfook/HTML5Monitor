@@ -88,7 +88,7 @@ if(is_ajax()) then
 		end
 		local msgQueue = H5MonitorServer.SortMsgQueue();
 		local screenShot = H5MonitorServer.GetHandleMsg();
-		wp_send_json(screenShot, true);
+		wp_send_json(msgQueue, true);
     end)
 
 -- server side,
