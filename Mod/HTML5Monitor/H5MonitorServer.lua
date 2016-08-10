@@ -115,11 +115,12 @@ function H5MonitorServer.GetNidQueue(nid)
 end
 
 -- get msg queue and index the imageData using IP
-function H5MonitorServer.GetMsgQueue()	
-	local contain = H5MonitorServer.msgQueue[H5MonitorServer.handle_msgsIP];
+function H5MonitorServer.GetMsgQueue(msg, msgIP)	
+	local contain = H5MonitorServer.msgQueue[msgIP];
 	if(not contain) then
-		H5MonitorServer.msgQueue[H5MonitorServer.handle_msgsIP] = H5MonitorServer.handle_msgs.imageData;
-		LOG.std(nil, "info", "H5MonitorServer msgsIP", tostring(H5MonitorServer.handle_msgsIP));
+		H5MonitorServer.msgQueue[msgIP] = msg.imageData;
+		LOG.std(nil, "info", "H5MonitorServer msgsImageData", tostring(msg.imageData));
+		LOG.std(nil, "info", "H5MonitorServer msgsImageData in msgQueue", tostring(H5MonitorServer.msgQueue['127.0.0.1']));
 	end
 end
 
@@ -128,26 +129,29 @@ function H5MonitorServer.SortMsgQueue()
 	local msgQueue = {};
 	local iplength = #(H5MonitorServer.IPQueue);
 	LOG.std(nil, "info", "H5MonitorServer IPQueue", tostring(H5MonitorServer.IPQueue[1]));
-	LOG.std(nil, "info", "H5MonitorServer iplength", tostring(iplength));
+	LOG.std(nil, "info", "H5MonitorServer msgQueue", tostring(H5MonitorServer.msgQueue['127.0.0.1']));
+	LOG.std(nil, "info", "H5MonitorServer msgsImageData in msgQueue in sort", tostring(H5MonitorServer.msgQueue[H5MonitorServer.IPQueue[1]]));
 	for i = 1,iplength do
 		local msgData = H5MonitorServer.msgQueue[H5MonitorServer.IPQueue[i]];
+		LOG.std(nil, "info", "H5MonitorServer msgData", tostring(msgData));
 		if(msgData) then 
 			table_insert(msgQueue, msgData);
 		end
 	end
 	LOG.std(nil, "info", "H5MonitorServer msgsQueue", tostring(msgQueue[1]));
+	LOG.std(nil, "info", "H5MonitorServer msgsQueue", tostring(msgQueue[2]));
 	return msgQueue;
 end
 
 -- clear msg queue every specific time interval(now is 3000ms)
 function H5MonitorServer.ClearMsgQueue()
-	local clearMsgQueueTimer;
-	clearMsgQueueTimer = commonlib.Timer:new({callbackFunc = function(timer)
+	if(H5MonitorServer.clearMsgQueueTimer) then return end
+	H5MonitorServer.clearMsgQueueTimer = commonlib.Timer:new({callbackFunc = function(timer)
 		H5MonitorServer.msgQueue = {};
+		LOG.std(nil, "info", "H5MonitorServer clear msgsQueue");
 	end})
-
 	-- time interval need to be thought again
-	clearMsgQueueTimer:Change(0, 3000);
+	H5MonitorServer.clearMsgQueueTimer:Change(0, 3000);
 end
 
 -- test if connected after connecting before sending
@@ -171,7 +175,7 @@ local function activate()
 		LOG.std(nil, "info", "H5MonitorServer", "got a message");
 		if(msg.tid) then
 			nid = getnid();
-			LOG.std(nil, "info", "H5MonitorServer nid:%s", nid);
+			LOG.std(nil, "info", "H5MonitorServer nid: ", nid);
 			local ip = H5MonitorServer.GetIP();
 			NPL.accept(msg.tid, nid);
 			LOG.std(nil, "info", "H5MonitorServer local ip", tostring(ip));
@@ -181,7 +185,8 @@ local function activate()
 		H5MonitorServer.handle_msgs = msg;
 		H5MonitorServer.handle_msgsIP = H5MonitorServer.GetIP();
 		if(msg.imageData) then
-			H5MonitorServer.GetMsgQueue();
+			local msgIP = H5MonitorServer.GetIP();
+			H5MonitorServer.GetMsgQueue(msg, msgIP);
 		elseif(msg.ping) then
 			H5MonitorServer.Send({pingSuccess = true});
 			LOG.std(nil, "info","server", "client ping status: %s" ,tostring(msg.ping));
