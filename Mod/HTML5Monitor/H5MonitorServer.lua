@@ -120,7 +120,7 @@ function H5MonitorServer.GetMsgQueue(msg, msgIP)
 	if(not contain) then
 		H5MonitorServer.msgQueue[msgIP] = msg.imageData;
 		LOG.std(nil, "info", "H5MonitorServer msgsImageData", tostring(msg.imageData));
-		LOG.std(nil, "info", "H5MonitorServer msgsImageData in msgQueue", tostring(H5MonitorServer.msgQueue['127.0.0.1']));
+		--LOG.std(nil, "info", "H5MonitorServer msgsImageData in msgQueue", tostring(H5MonitorServer.msgQueue['127.0.0.1']));
 	end
 end
 
@@ -128,9 +128,10 @@ end
 function H5MonitorServer.SortMsgQueue()
 	local msgQueue = {};
 	local iplength = #(H5MonitorServer.IPQueue);
+	LOG.std(nil, "info", "H5MonitorServer nidQueue", tostring(H5MonitorServer.nidQueue[1]));
 	LOG.std(nil, "info", "H5MonitorServer IPQueue", tostring(H5MonitorServer.IPQueue[1]));
-	LOG.std(nil, "info", "H5MonitorServer msgQueue", tostring(H5MonitorServer.msgQueue['127.0.0.1']));
-	LOG.std(nil, "info", "H5MonitorServer msgsImageData in msgQueue in sort", tostring(H5MonitorServer.msgQueue[H5MonitorServer.IPQueue[1]]));
+	--LOG.std(nil, "info", "H5MonitorServer msgQueue", tostring(H5MonitorServer.msgQueue['127.0.0.1']));
+	--LOG.std(nil, "info", "H5MonitorServer msgsImageData in msgQueue in sort", tostring(H5MonitorServer.msgQueue[H5MonitorServer.IPQueue[1]]));
 	for i = 1,iplength do
 		local msgData = H5MonitorServer.msgQueue[H5MonitorServer.IPQueue[i]];
 		LOG.std(nil, "info", "H5MonitorServer msgData", tostring(msgData));
@@ -139,7 +140,7 @@ function H5MonitorServer.SortMsgQueue()
 		end
 	end
 	LOG.std(nil, "info", "H5MonitorServer msgsQueue", tostring(msgQueue[1]));
-	LOG.std(nil, "info", "H5MonitorServer msgsQueue", tostring(msgQueue[2]));
+	--LOG.std(nil, "info", "H5MonitorServer msgsQueue", tostring(msgQueue[2]));
 	return msgQueue;
 end
 

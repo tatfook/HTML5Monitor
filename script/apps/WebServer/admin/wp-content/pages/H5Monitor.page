@@ -73,8 +73,9 @@ if(is_ajax()) then
 -- server side,
 	add_action('wp_ajax_monitor_show_large_screen_shot', function()
 		local largeScreenShotCounter = request:get("largeScreenShotCounter");
+		local index = request:get("index");
 		if(tonumber(largeScreenShotCounter) == 0) then
-			H5MonitorServer.SetScreenShotInfo(true);
+			H5MonitorServer.SetScreenShotInfo(true, H5MonitorServer.nidQueue[index+1]);
 		end
 		local largeScreenShot = H5MonitorServer.GetHandleMsg();
 		wp_send_json(largeScreenShot,true);
@@ -93,7 +94,8 @@ if(is_ajax()) then
 
 -- server side,
 	add_action('wp_ajax_monitor_show_screen_shot_info', function()
-		local remoteIP = H5MonitorServer.GetIP();
+		local index = request:get("index");
+		local remoteIP = H5MonitorServer.IPQueue[index+1];
 		local screenShotInfo = {remoteIP = remoteIP};
 		wp_send_json(screenShotInfo, true);
 	end)

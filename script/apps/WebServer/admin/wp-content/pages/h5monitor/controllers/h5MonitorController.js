@@ -44,7 +44,7 @@ angular.module('H5Monitor_App', ['ngStorage', 'ngDialog'])
             }, 3000);
         }
         
-        $scope.showLargeScreenShot = function () {
+        $scope.showLargeScreenShot = function (index) {
             if (angular.isDefined(largeScreenShotTimer)) return;
             if (angular.isDefined(screenShotTimer)) {
                 $interval.cancel(screenShotTimer);
@@ -61,7 +61,7 @@ angular.module('H5Monitor_App', ['ngStorage', 'ngDialog'])
                 }
             }); 
             largeScreenShotTimer = $interval(function () {
-                $scope.doShowLargeScreenShot();
+                $scope.doShowLargeScreenShot(index);
                 $scope.largeScreenShotCounter = $scope.largeScreenShotCounter + 1;
             }, 3000);
         }
@@ -85,8 +85,8 @@ angular.module('H5Monitor_App', ['ngStorage', 'ngDialog'])
             });
         }
 
-        $scope.doShowLargeScreenShot = function () {
-            var url = "ajax/H5Monitor?action=monitor_show_large_screen_shot&largeScreenShotCounter=" + $scope.largeScreenShotCounter;
+        $scope.doShowLargeScreenShot = function (index) {
+            var url = "ajax/H5Monitor?action=monitor_show_large_screen_shot&largeScreenShotCounter=" + $scope.largeScreenShotCounter + "&index=" + index;
             $http.get(url).then(function (response) {
                 if (response.data) {
                     var imageData = response.data.imageData;
@@ -95,8 +95,8 @@ angular.module('H5Monitor_App', ['ngStorage', 'ngDialog'])
             });
         }
 
-        $scope.showScreenShotInfo = function () {
-            var url = "ajax/H5Monitor?action=monitor_show_screen_shot_info";
+        $scope.showScreenShotInfo = function (index) {
+            var url = "ajax/H5Monitor?action=monitor_show_screen_shot_info&index=" + index;
             $http.get(url).then(function (response) {
                 $scope.screenShotInfo = response.data.remoteIP;
             });
