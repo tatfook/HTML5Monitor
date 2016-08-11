@@ -103,9 +103,9 @@ function H5MonitorClient.TakeScreenShot(width,height)
 	height = tonumber(height);
 	-- ParaEngine.ForceRender();ParaEngine.ForceRender();
 	if(width and height)then
-		ParaMovie.TakeScreenShot(imageFile, width, height);
+		ParaMovie.TakeScreenShot_Async(imageFile, width, height,"");
 	else
-		ParaMovie.TakeScreenShot(imageFile);
+		ParaMovie.TakeScreenShot_Async(imageFile,"");
 	end
 	local imageObj = ParaIO.open(imageFile, "r");
 	local imageData = imageObj:GetText(0, -1);
@@ -130,8 +130,11 @@ end
 -- client side, to get image data, and it will return a table {"imageData":imageData}
 function H5MonitorClient.GetScreenShot()
 	local width, height = H5MonitorClient.GetScreenShotInfo();
-	local imageData = H5MonitorClient.TakeScreenShot(width,height);
-	local imageData = Encoding.base64(imageData);
+	LOG.std(nil, "info","client time 0","%s" ,tostring(ParaGlobal.timeGetTime()));
+	local imageDatas = H5MonitorClient.TakeScreenShot(width,height);
+	LOG.std(nil, "info","client time 1","%s" ,tostring(ParaGlobal.timeGetTime()));
+	local imageData = Encoding.base64(imageDatas);
+	LOG.std(nil, "info","client time 2","%s" ,tostring(ParaGlobal.timeGetTime()));
 	local image = {imageData = imageData};
 	return image
 end
@@ -140,8 +143,12 @@ end
 function H5MonitorClient.Response()
 	if(H5MonitorClient.clientSendTimer) then return end;
 	H5MonitorClient.clientSendTimer = commonlib.Timer:new({callbackFunc = function(timer)
+			LOG.std(nil, "info","client time before get image","%s" ,tostring(ParaGlobal.timeGetTime()));
 			local imageData = H5MonitorClient.GetScreenShot();
+			LOG.std(nil, "info","client time before send image","%s" ,tostring(ParaGlobal.timeGetTime()));
 			H5MonitorClient.sendStatus = H5MonitorClient.Send(imageData);
+			LOG.std(nil, "info","client time after send image","%s" ,tostring(ParaGlobal.timeGetTime()));
+
 			if( H5MonitorClient.sendStatus ~= 0 ) then
 				H5MonitorClient.clientSendTimer:Change();
 				H5MonitorClient.Ping();
@@ -173,7 +180,6 @@ local function activate()
 		if(msg.pingSuccess or (msg.width and msg.height)) then
 			H5MonitorClient.Response();
 		elseif (msg.ping) then
-			
 			H5MonitorClient.Send({pingSuccess = H5MonitorClient.pingCounter()});
 			LOG.std(nil, "info","client", "server ping status: %s" , tostring(msg.ping));
 		end

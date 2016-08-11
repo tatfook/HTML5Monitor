@@ -60,6 +60,7 @@ function H5MonitorServer.Start(host,port)
 	host = tostring(host);
 	port = tostring(port);
 	nid = getnid();
+	H5MonitorServer.GetClientIP(host);
 	H5MonitorServer.GetIPQueue(host);
 	H5MonitorServer.GetNidQueue(nid);
 	local params = {host = host, port = port, nid = nid};
@@ -89,6 +90,9 @@ function H5MonitorServer.GetIP()
 	return remoteIP;
 end
 
+function H5MonitorServer.GetClientIP(ip)
+	H5MonitorServer.clientIP = ip;
+end
 -- @param: is_large, to save bandwidth and time, usually set small size image(nil parameter), when necessary, set large size
 function H5MonitorServer.SetScreenShotInfo(is_large, usernid)
 	local width, height = 256, 256;
@@ -186,7 +190,7 @@ local function activate()
 		H5MonitorServer.handle_msgs = msg;
 		H5MonitorServer.handle_msgsIP = H5MonitorServer.GetIP();
 		if(msg.imageData) then
-			local msgIP = H5MonitorServer.GetIP();
+			local msgIP = H5MonitorServer.GetIP() or H5MonitorServer.clientIP;
 			H5MonitorServer.GetMsgQueue(msg, msgIP);
 		elseif(msg.ping) then
 			H5MonitorServer.Send({pingSuccess = true});

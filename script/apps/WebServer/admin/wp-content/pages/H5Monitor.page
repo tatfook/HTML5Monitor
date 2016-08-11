@@ -78,14 +78,19 @@ if(is_ajax()) then
 			H5MonitorServer.SetScreenShotInfo(true, H5MonitorServer.nidQueue[index+1]);
 		end
 		local largeScreenShot = H5MonitorServer.GetHandleMsg();
-		wp_send_json(largeScreenShot,true);
+		local msgQueue = H5MonitorServer.SortMsgQueue();
+		local largemsg = msgQueue[index + 1];
+		local large = {imageData = largemsg}
+		--wp_send_json(largeScreenShot,true);
+		wp_send_json(large, true);
 	end)
 
 -- server side,	
 	add_action('wp_ajax_monitor_show_screen_shot', function()
 		local screenShotCounter = request:get("screenShotCounter");
-		if(tonumber(screenShotCounter) == 0) then
-			H5MonitorServer.SetScreenShotInfo();
+		local index = request:get("index");
+		if(tonumber(screenShotCounter) == 0 and index) then
+			H5MonitorServer.SetScreenShotInfo(nil, H5MonitorServer.nidQueue[index+1]);
 		end
 		local msgQueue = H5MonitorServer.SortMsgQueue();
 		local screenShot = H5MonitorServer.GetHandleMsg();
