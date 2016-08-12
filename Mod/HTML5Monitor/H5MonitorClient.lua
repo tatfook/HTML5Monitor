@@ -154,7 +154,7 @@ function H5MonitorClient.Response()
 				H5MonitorClient.Ping();
 			end
 	end})
-	H5MonitorClient.clientSendTimer:Change(0,3000);
+	H5MonitorClient.clientSendTimer:Change(0,2000);
 end
 
 -- test if connected after connecting before sending
