@@ -82,6 +82,7 @@ if(is_ajax()) then
 		local largemsg = msgQueue[index + 1];
 		local large = {imageData = largemsg}
 		--wp_send_json(largeScreenShot,true);
+		H5MonitorServer.ClearMsgQueue();
 		wp_send_json(large, true);
 	end)
 
@@ -94,6 +95,7 @@ if(is_ajax()) then
 		end
 		local msgQueue = H5MonitorServer.SortMsgQueue();
 		local screenShot = H5MonitorServer.GetHandleMsg();
+		H5MonitorServer.ClearMsgQueue();
 		wp_send_json(msgQueue, true);
     end)
 

@@ -150,13 +150,8 @@ end
 
 -- clear msg queue every specific time interval(now is 3000ms)
 function H5MonitorServer.ClearMsgQueue()
-	if(H5MonitorServer.clearMsgQueueTimer) then return end
-	H5MonitorServer.clearMsgQueueTimer = commonlib.Timer:new({callbackFunc = function(timer)
 		H5MonitorServer.msgQueue = {};
 		LOG.std(nil, "info", "H5MonitorServer clear msgsQueue");
-	end})
-	-- time interval need to be thought again
-	H5MonitorServer.clearMsgQueueTimer:Change(0, 3000);
 end
 
 -- test if connected after connecting before sending
@@ -199,7 +194,6 @@ local function activate()
 			H5MonitorServer.SetScreenShotInfo();
 			LOG.std(nil, "info"," server ", "client pingSuccess status: %s" ,tostring(msg.pingSuccess));
 		end
-		H5MonitorServer.ClearMsgQueue();
 	end	
 end
 
