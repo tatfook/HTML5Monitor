@@ -68,7 +68,6 @@ function H5MonitorServer.Start(host,port)
 	NPL.AddNPLRuntimeAddress(params);
 	H5MonitorServer.Send({},true)
 	LOG.std(nil, "info", "H5MonitorServer", "Connect host:%s port:%s",host,port);
-
 	H5MonitorServer.handle_msgs = { server_started = true };
 end
 function H5MonitorServer.Stop()
@@ -168,7 +167,7 @@ function H5MonitorServer.Ping()
 	serverPingTimer:Change(0, 100);
 end
 
-
+-- main function
 local function activate()
 	if(msg) then
 		-- LOG.std(nil, "info", "H5MonitorServer", "accept");
