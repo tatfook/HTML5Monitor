@@ -139,10 +139,6 @@ function H5MonitorClient.Response()
 	H5MonitorClient.clientSendTimer = commonlib.Timer:new({callbackFunc = function(timer)
 			local imageData = H5MonitorClient.GetScreenShot();
 			H5MonitorClient.sendStatus = H5MonitorClient.Send(imageData);
-			if( H5MonitorClient.sendStatus ~= 0 ) then
-				H5MonitorClient.clientSendTimer:Change();
-				H5MonitorClient.Ping();
-			end
 	end})
 	H5MonitorClient.clientSendTimer:Change(0,2000);
 end
