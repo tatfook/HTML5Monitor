@@ -24,13 +24,12 @@ NPL.load("(gl)script/ide/timer.lua");
 NPL.load("(gl)script/ide/System/Encoding/base64.lua");
 local H5MonitorClient = commonlib.gettable("Mod.HTML5Monitor.H5MonitorClient");
 local Encoding = commonlib.gettable("System.Encoding");
-local rts_name = "h5monitor_worker";
 local client_file = "Mod/HTML5Monitor/H5MonitorClient.lua";
 local server_file = "Mod/HTML5Monitor/H5MonitorServer.lua";
 H5MonitorClient.handle_msgs = nil;
 
 local imageFile = "temp/monitor_screenshot.png";
-local is_login = false;
+
 function H5MonitorClient.AddPublicFiles()
     NPL.AddPublicFile(client_file, 7001);
     NPL.AddPublicFile(server_file, 7002);
@@ -67,9 +66,7 @@ function H5MonitorClient.Start(host,port)
 	
 	host = tostring(host);
 	port = tostring(port);
-	-- nid = getnid();
 	local params = {host = host, port = port, nid = nid};
-	-- add the server address
 	NPL.AddNPLRuntimeAddress(params);
 	H5MonitorClient.Send({},true)
 	H5MonitorClient.handle_msgs = { client_connected = true };
@@ -130,11 +127,8 @@ end
 -- client side, to get image data, and it will return a table {"imageData":imageData}
 function H5MonitorClient.GetScreenShot()
 	local width, height = H5MonitorClient.GetScreenShotInfo();
-	LOG.std(nil, "info","client time 0","%s" ,tostring(ParaGlobal.timeGetTime()));
-	local imageDatas = H5MonitorClient.TakeScreenShot(width,height);
-	LOG.std(nil, "info","client time 1","%s" ,tostring(ParaGlobal.timeGetTime()));
-	local imageData = Encoding.base64(imageDatas);
-	LOG.std(nil, "info","client time 2","%s" ,tostring(ParaGlobal.timeGetTime()));
+	local screenShot = H5MonitorClient.TakeScreenShot(width,height);
+	local imageData = Encoding.base64(screenShot);
 	local image = {imageData = imageData};
 	return image
 end
@@ -143,12 +137,8 @@ end
 function H5MonitorClient.Response()
 	if(H5MonitorClient.clientSendTimer) then return end;
 	H5MonitorClient.clientSendTimer = commonlib.Timer:new({callbackFunc = function(timer)
-			LOG.std(nil, "info","client time before get image","%s" ,tostring(ParaGlobal.timeGetTime()));
 			local imageData = H5MonitorClient.GetScreenShot();
-			LOG.std(nil, "info","client time before send image","%s" ,tostring(ParaGlobal.timeGetTime()));
 			H5MonitorClient.sendStatus = H5MonitorClient.Send(imageData);
-			LOG.std(nil, "info","client time after send image","%s" ,tostring(ParaGlobal.timeGetTime()));
-
 			if( H5MonitorClient.sendStatus ~= 0 ) then
 				H5MonitorClient.clientSendTimer:Change();
 				H5MonitorClient.Ping();
@@ -173,7 +163,6 @@ end
 
 local function activate()
 	if(msg)then
-		-- LOG.std(nil, "info", "H5MonitorClient", "accept");
 		LOG.std(nil, "info", "H5MonitorClient", "got a message");
 		NPL.accept(msg.tid, nid);
 		H5MonitorClient.handle_msgs = msg;

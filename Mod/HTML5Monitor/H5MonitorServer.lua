@@ -23,15 +23,15 @@ NPL.load("(gl)script/ide/commonlib.lua");
 NPL.load("(gl)script/ide/timer.lua");
 
 local H5MonitorServer = commonlib.gettable("Mod.HTML5Monitor.H5MonitorServer");
-local rts_name = "h5monitor_worker";
--- local nid = H5MonitorServer.GetNid();
 local client_file = "Mod/HTML5Monitor/H5MonitorClient.lua";
 local server_file = "Mod/HTML5Monitor/H5MonitorServer.lua";
+
 local table_insert = table.insert;
+
 H5MonitorServer.handle_msgs = nil;
 H5MonitorServer.handle_msgsIP = nil;
 H5MonitorServer.msgQueue = {};
-H5MonitorServer.IPQueue = {};
+H5MonitorServer.ipQueue = {};
 H5MonitorServer.nidQueue = {};
 
 function H5MonitorServer.AddPublicFiles()
@@ -70,9 +70,11 @@ function H5MonitorServer.Start(host,port)
 	LOG.std(nil, "info", "H5MonitorServer", "Connect host:%s port:%s",host,port);
 	H5MonitorServer.handle_msgs = { server_started = true };
 end
+
 function H5MonitorServer.Stop()
 
 end
+
 function H5MonitorServer.Send(msg, usernid)
 	local nid = usernid or msg.nid or msg.tid or nid;
 	local res = NPL.activate(string.format("%s:%s", nid, client_file), msg);
@@ -92,6 +94,7 @@ end
 function H5MonitorServer.GetClientIP(ip)
 	H5MonitorServer.clientIP = ip;
 end
+
 -- @param: is_large, to save bandwidth and time, usually set small size image(nil parameter), when necessary, set large size
 function H5MonitorServer.SetScreenShotInfo(is_large, usernid)
 	local width, height = 256, 256;
@@ -110,7 +113,7 @@ function H5MonitorServer.Response()
 end
 
 function H5MonitorServer.GetIPQueue(ip)
-	table_insert(H5MonitorServer.IPQueue, ip);
+	table_insert(H5MonitorServer.ipQueue, ip);
 end
 
 function H5MonitorServer.GetNidQueue(nid)
@@ -122,28 +125,20 @@ function H5MonitorServer.GetMsgQueue(msg, msgIP)
 	local contain = H5MonitorServer.msgQueue[msgIP];
 	if(not contain) then
 		H5MonitorServer.msgQueue[msgIP] = msg.imageData;
-		LOG.std(nil, "info", "H5MonitorServer msgsImageData", tostring(msg.imageData));
-		--LOG.std(nil, "info", "H5MonitorServer msgsImageData in msgQueue", tostring(H5MonitorServer.msgQueue['127.0.0.1']));
 	end
 end
 
 -- sort msg queue according to their connection order using IP queue
 function H5MonitorServer.SortMsgQueue()
 	local msgQueue = {};
-	local iplength = #(H5MonitorServer.IPQueue);
-	LOG.std(nil, "info", "H5MonitorServer nidQueue", tostring(H5MonitorServer.nidQueue[1]));
-	LOG.std(nil, "info", "H5MonitorServer IPQueue", tostring(H5MonitorServer.IPQueue[1]));
-	--LOG.std(nil, "info", "H5MonitorServer msgQueue", tostring(H5MonitorServer.msgQueue['127.0.0.1']));
-	--LOG.std(nil, "info", "H5MonitorServer msgsImageData in msgQueue in sort", tostring(H5MonitorServer.msgQueue[H5MonitorServer.IPQueue[1]]));
+	local iplength = #(H5MonitorServer.ipQueue);
 	for i = 1,iplength do
-		local msgData = H5MonitorServer.msgQueue[H5MonitorServer.IPQueue[i]];
+		local msgData = H5MonitorServer.msgQueue[H5MonitorServer.ipQueue[i]];
 		LOG.std(nil, "info", "H5MonitorServer msgData", tostring(msgData));
 		if(msgData) then 
 			table_insert(msgQueue, msgData);
 		end
 	end
-	LOG.std(nil, "info", "H5MonitorServer msgsQueue", tostring(msgQueue[1]));
-	--LOG.std(nil, "info", "H5MonitorServer msgsQueue", tostring(msgQueue[2]));
 	return msgQueue;
 end
 
@@ -170,8 +165,9 @@ end
 -- main function
 local function activate()
 	if(msg) then
-		-- LOG.std(nil, "info", "H5MonitorServer", "accept");
 		LOG.std(nil, "info", "H5MonitorServer", "got a message");
+		H5MonitorServer.handle_msgs = msg;
+		H5MonitorServer.handle_msgsIP = H5MonitorServer.GetIP();
 		if(msg.tid) then
 			nid = getnid();
 			LOG.std(nil, "info", "H5MonitorServer nid: ", nid);
@@ -181,8 +177,6 @@ local function activate()
 			H5MonitorServer.GetIPQueue(ip);
 			H5MonitorServer.GetNidQueue(nid);
 		end
-		H5MonitorServer.handle_msgs = msg;
-		H5MonitorServer.handle_msgsIP = H5MonitorServer.GetIP();
 		if(msg.imageData) then
 			local msgIP = H5MonitorServer.GetIP() or H5MonitorServer.clientIP;
 			H5MonitorServer.GetMsgQueue(msg, msgIP);

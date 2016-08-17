@@ -75,7 +75,7 @@ angular.module('H5Monitor_App', ['ngStorage', 'ngDialog'])
         }
 
         $scope.doShowScreenShot = function (index) {
-            var url = "ajax/H5Monitor?action=monitor_show_screen_shot&screenShotCounter=" + $scope.screenShotCounter +"&index=" + index;
+            var url = "ajax/H5Monitor?action=monitor_show_screen_shot&counter=" + $scope.screenShotCounter +"&index=" + index;
             $http.get(url).then(function (response) {
                 if (response.data) {
                     $scope.imageArray = response.data;
@@ -86,7 +86,7 @@ angular.module('H5Monitor_App', ['ngStorage', 'ngDialog'])
         }
 
         $scope.doShowLargeScreenShot = function (index) {
-            var url = "ajax/H5Monitor?action=monitor_show_large_screen_shot&largeScreenShotCounter=" + $scope.largeScreenShotCounter + "&index=" + index;
+            var url = "ajax/H5Monitor?action=monitor_show_large_screen_shot&counter=" + $scope.largeScreenShotCounter + "&index=" + index;
             $http.get(url).then(function (response) {
                 if (response.data) {
                     var imageData = response.data.imageData;
