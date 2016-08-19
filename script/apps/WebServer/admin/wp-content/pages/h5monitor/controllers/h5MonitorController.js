@@ -7,6 +7,7 @@ angular.module('H5Monitor_App', ['ngStorage', 'ngDialog'])
 
         var screenShotTimer;
         var largeScreenShotTimer;
+        $scope.imageArray = {};
 
         $scope.doClientStart = function () {
             var server = $("#server").val();
@@ -27,11 +28,12 @@ angular.module('H5Monitor_App', ['ngStorage', 'ngDialog'])
             var url = "ajax/H5Monitor?action=monitor_server_start&client=" + client;
             ngDialog.close("addNewClientDialogID");
             $http.get(url).then(function (response) {
-               // $scope.showScreenShot();
+
             });
         }
 
         $scope.showScreenShot = function (index) {
+            
             if (angular.isDefined(screenShotTimer)) return;
             if (angular.isDefined(largeScreenShotTimer)) {
                 $interval.cancel(largeScreenShotTimer);
@@ -39,9 +41,10 @@ angular.module('H5Monitor_App', ['ngStorage', 'ngDialog'])
             }
             $scope.screenShotCounter = 0;
             screenShotTimer = $interval(function () {
+                $scope.showScreenShotInfo();
                 $scope.doShowScreenShot(index);
                 $scope.screenShotCounter = $scope.screenShotCounter + 1;
-            }, 3000);
+            }, 3000);   
         }
         
         $scope.showLargeScreenShot = function (index) {
@@ -79,10 +82,9 @@ angular.module('H5Monitor_App', ['ngStorage', 'ngDialog'])
             $http.get(url).then(function (response) {
                 if (response.data) {
                     $scope.imageArray = response.data;
-                    //var imageData = response.data.imageData;
-                    //$scope.drawImage(imageData);
                 }
             });
+            
         }
 
         $scope.doShowLargeScreenShot = function (index) {
@@ -95,10 +97,12 @@ angular.module('H5Monitor_App', ['ngStorage', 'ngDialog'])
             });
         }
 
-        $scope.showScreenShotInfo = function (index) {
-            var url = "ajax/H5Monitor?action=monitor_show_screen_shot_info&index=" + index;
+        $scope.showScreenShotInfo = function () {
+            var url = "ajax/H5Monitor?action=monitor_show_screen_shot_info";
             $http.get(url).then(function (response) {
-                $scope.screenShotInfo = response.data.remoteIP;
+                if (response.data) {
+                    $scope.screenShotInfo = response.data;
+                }
             });
         }
 

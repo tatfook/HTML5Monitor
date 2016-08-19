@@ -27,6 +27,7 @@ local client_file = "Mod/HTML5Monitor/H5MonitorClient.lua";
 local server_file = "Mod/HTML5Monitor/H5MonitorServer.lua";
 
 local table_insert = table.insert;
+local table_remove = table.remove;
 
 H5MonitorServer.handle_msgs = nil;
 H5MonitorServer.handle_msgsIP = nil;
@@ -112,8 +113,16 @@ function H5MonitorServer.Response()
 	
 end
 
+function H5MonitorServer.SetIPQueue(ip)
+	
+end
+
 function H5MonitorServer.GetIPQueue(ip)
 	table_insert(H5MonitorServer.ipQueue, ip);
+end
+
+function H5MonitorServer.SetNidQueue(nid)
+	
 end
 
 function H5MonitorServer.GetNidQueue(nid)
@@ -134,7 +143,7 @@ function H5MonitorServer.SortMsgQueue()
 	local iplength = #(H5MonitorServer.ipQueue);
 	for i = 1,iplength do
 		local msgData = H5MonitorServer.msgQueue[H5MonitorServer.ipQueue[i]];
-		LOG.std(nil, "info", "H5MonitorServer msgData", tostring(msgData));
+		--LOG.std(nil, "info", "H5MonitorServer msgData", tostring(msgData));
 		if(msgData) then 
 			table_insert(msgQueue, msgData);
 		end
@@ -145,7 +154,7 @@ end
 -- clear msg queue every specific time interval(now is 3000ms)
 function H5MonitorServer.ClearMsgQueue()
 		H5MonitorServer.msgQueue = {};
-		LOG.std(nil, "info", "H5MonitorServer clear msgsQueue");
+		LOG.std(nil, "info", "H5MonitorServer", "clear msgsQueue");
 end
 
 -- test if connected after connecting before sending

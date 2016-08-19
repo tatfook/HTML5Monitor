@@ -15,13 +15,14 @@
 <div class="container">
 	<div class="row">
 		<div class="col-md-4 col-lg-3">
-			<input type="image" id="add_new_client" ng-click="addNewClient()" src="wp-includes/img/add_new_client.png" />
+			<input type="image" id="add_new_client" class="img-rounded" ng-click="addNewClient()" src="wp-includes/img/add_new_client.png" />
 		</div>
 		<div ng-repeat="image in imageArray"> 
 			<div class="col-md-4 col-lg-3">
 				<a ng-click="showLargeScreenShot($index)" > 
-					<img width="256" height="256" ng-src="data:image/png;base64,{{image}}" ng-mouseover="showScreenShotInfo($index)" title="{{screenShotInfo}}" /> 
+					<img width="256" height="256" class="img-rounded" ng-src="data:image/png;base64,{{image}}"  />
 				</a>
+				<center><span class="label label-primary">IP: {{screenShotInfo[$index]}}</span></center>
 			</div>
 		</div>
 	</div>
