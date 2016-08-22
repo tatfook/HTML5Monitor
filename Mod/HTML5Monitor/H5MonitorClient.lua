@@ -28,7 +28,7 @@ local client_file = "Mod/HTML5Monitor/H5MonitorClient.lua";
 local server_file = "Mod/HTML5Monitor/H5MonitorServer.lua";
 H5MonitorClient.handle_msgs = nil;
 
-local imageFile = "temp/monitor_screenshot.png";
+local filepath = "temp/monitor_screenshot.png";
 
 function H5MonitorClient.AddPublicFiles()
     NPL.AddPublicFile(client_file, 7001);
@@ -72,6 +72,15 @@ function H5MonitorClient.Start(host,port)
 	H5MonitorClient.handle_msgs = { client_connected = true };
     LOG.std(nil, "info", "H5MonitorClient", "Connect host:%s port: %s",host,port);
 end
+
+function H5MonitorClient.Callback()
+	--commonlib.log("TestTakeScreenShot received a msg %s \n",commonlib.serialize(msg));
+	local res = msg.res;
+	local sequence = msg.s;
+	local size = msg.size;
+	H5MonitorClient.imageData = msg.base64;
+end
+
 function H5MonitorClient.Stop()
 end
 
@@ -100,14 +109,16 @@ function H5MonitorClient.TakeScreenShot(width,height)
 	height = tonumber(height);
 	-- ParaEngine.ForceRender();ParaEngine.ForceRender();
 	if(width and height)then
-		ParaMovie.TakeScreenShot_Async(imageFile, width, height,"");
+		ParaMovie.TakeScreenShot_Async(filepath ,true,  width, height, string.format("Mod.HTML5Monitor.H5MonitorClient.Callback();%d",4));
+		--ParaMovie.TakeScreenShot_Async(imageFile, width, height,"");
 	else
-		ParaMovie.TakeScreenShot_Async(imageFile,"");
+		ParaMovie.TakeScreenShot_Async(filepath,true,  -1, -1, string.format("Mod.HTML5Monitor.H5MonitorClient.Callback();%d",4));
+		--ParaMovie.TakeScreenShot_Async(imageFile,"");
 	end
-	local imageObj = ParaIO.open(imageFile, "r");
-	local imageData = imageObj:GetText(0, -1);
-	imageObj:close();
-	return imageData
+	--local imageObj = ParaIO.open(imageFile, "r");
+	--local imageData = imageObj:GetText(0, -1);
+	--imageObj:close();
+	--return imageData
 end
 
 -- client side, to read image info from the msgs transmit by server
@@ -128,8 +139,8 @@ end
 function H5MonitorClient.GetScreenShot()
 	local width, height = H5MonitorClient.GetScreenShotInfo();
 	local screenShot = H5MonitorClient.TakeScreenShot(width,height);
-	local imageData = Encoding.base64(screenShot);
-	local image = {imageData = imageData};
+	--H5MonitorClient.imageData = Encoding.base64(screenShot);
+	local image = {imageData = H5MonitorClient.imageData};
 	return image
 end
 
