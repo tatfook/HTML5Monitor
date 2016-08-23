@@ -156,8 +156,9 @@ end
 function H5MonitorServer.SortMsgQueue()
 	local msgQueue = {};
 	local iplength = #(H5MonitorServer.tempIPQueue);
+	LOG.std(nil, "info", "H5MonitorServer iplength", tostring(iplength));
 	for i = 1,iplength do
-		local msgData = H5MonitorServer.msgQueue[H5MonitorServer.ipQueue[i]];
+		local msgData = H5MonitorServer.msgQueue[H5MonitorServer.SortTempIPQueue()[i]];
 		--LOG.std(nil, "info", "H5MonitorServer msgData", tostring(msgData));
 		if(msgData) then 
 			table_insert(msgQueue, msgData);
@@ -199,7 +200,7 @@ local function activate()
 			local ip = H5MonitorServer.GetIP();
 			NPL.accept(msg.tid, nid);
 			LOG.std(nil, "info", "H5MonitorServer local ip", tostring(ip));
-			if(not H5MonitorServer.ipQueue[ip]) then
+			if(not H5MonitorServer.nidQueue[ip]) then
 				H5MonitorServer.GetIPQueue(ip);
 			end
 			H5MonitorServer.GetNidQueue(ip, nid);

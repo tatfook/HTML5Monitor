@@ -44,7 +44,7 @@ angular.module('H5Monitor_App', ['ngStorage', 'ngDialog'])
                 $scope.showScreenShotInfo();
                 $scope.doShowScreenShot(index);
                 $scope.screenShotCounter = $scope.screenShotCounter + 1;
-            }, 1200);   
+            }, 1500);   
         }
 
         // Now timer is 3000 ms, it can be reset, but it should be larger than the client send msg timer
@@ -67,7 +67,7 @@ angular.module('H5Monitor_App', ['ngStorage', 'ngDialog'])
             largeScreenShotTimer = $interval(function () {
                 $scope.doShowLargeScreenShot(index);
                 $scope.largeScreenShotCounter = $scope.largeScreenShotCounter + 1;
-            }, 1200);
+            }, 1500);
         }
 
         $scope.drawImage = function (imageData) {
