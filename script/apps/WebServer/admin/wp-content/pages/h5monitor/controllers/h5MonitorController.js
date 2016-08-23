@@ -32,8 +32,8 @@ angular.module('H5Monitor_App', ['ngStorage', 'ngDialog'])
             });
         }
 
+        // Now timer is 3000 ms, it can be reset, but it should be larger than the client send msg timer
         $scope.showScreenShot = function (index) {
-            
             if (angular.isDefined(screenShotTimer)) return;
             if (angular.isDefined(largeScreenShotTimer)) {
                 $interval.cancel(largeScreenShotTimer);
@@ -44,9 +44,10 @@ angular.module('H5Monitor_App', ['ngStorage', 'ngDialog'])
                 $scope.showScreenShotInfo();
                 $scope.doShowScreenShot(index);
                 $scope.screenShotCounter = $scope.screenShotCounter + 1;
-            }, 3000);   
+            }, 1200);   
         }
-        
+
+        // Now timer is 3000 ms, it can be reset, but it should be larger than the client send msg timer
         $scope.showLargeScreenShot = function (index) {
             if (angular.isDefined(largeScreenShotTimer)) return;
             if (angular.isDefined(screenShotTimer)) {
@@ -66,7 +67,7 @@ angular.module('H5Monitor_App', ['ngStorage', 'ngDialog'])
             largeScreenShotTimer = $interval(function () {
                 $scope.doShowLargeScreenShot(index);
                 $scope.largeScreenShotCounter = $scope.largeScreenShotCounter + 1;
-            }, 3000);
+            }, 1200);
         }
 
         $scope.drawImage = function (imageData) {

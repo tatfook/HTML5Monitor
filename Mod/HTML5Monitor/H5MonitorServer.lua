@@ -32,6 +32,7 @@ local table_remove = table.remove;
 H5MonitorServer.handle_msgs = nil;
 H5MonitorServer.handle_msgsIP = nil;
 H5MonitorServer.msgQueue = {};
+H5MonitorServer.tempIPQueue = {};
 H5MonitorServer.ipQueue = {};
 H5MonitorServer.nidQueue = {};
 
@@ -63,7 +64,7 @@ function H5MonitorServer.Start(host,port)
 	nid = getnid();
 	H5MonitorServer.GetClientIP(host);
 	H5MonitorServer.GetIPQueue(host);
-	H5MonitorServer.GetNidQueue(nid);
+	H5MonitorServer.GetNidQueue(host, nid);
 	local params = {host = host, port = port, nid = nid};
 	-- add the server address
 	NPL.AddNPLRuntimeAddress(params);
@@ -113,20 +114,19 @@ function H5MonitorServer.Response()
 	
 end
 
-function H5MonitorServer.SetIPQueue(ip)
-	
+-- temp ip array for one time interval
+function H5MonitorServer.GetTempIPQueue(ip)
+	table_insert(H5MonitorServer.tempIPQueue, ip);
 end
 
+-- the ip array that arrange by the connection order,
 function H5MonitorServer.GetIPQueue(ip)
 	table_insert(H5MonitorServer.ipQueue, ip);
 end
 
-function H5MonitorServer.SetNidQueue(nid)
-	
-end
-
-function H5MonitorServer.GetNidQueue(nid)
-	table_insert(H5MonitorServer.nidQueue, nid);
+-- the nid table, such as {'127.0.0.1': "student1"}
+function H5MonitorServer.GetNidQueue(ip, nid)
+	H5MonitorServer.nidQueue[ip] = nid;
 end
 
 -- get msg queue and index the imageData using IP
@@ -134,7 +134,22 @@ function H5MonitorServer.GetMsgQueue(msg, msgIP)
 	local contain = H5MonitorServer.msgQueue[msgIP];
 	if(not contain) then
 		H5MonitorServer.msgQueue[msgIP] = msg.imageData;
+		H5MonitorServer.GetTempIPQueue(msgIP);
 	end
+end
+
+-- sort tempIPQueue according to ipQueue
+function H5MonitorServer.SortTempIPQueue()
+	local temp = {}
+	for key, value in ipairs(H5MonitorServer.ipQueue) do
+		temp[value] = key;
+	end
+	table.sort(H5MonitorServer.tempIPQueue, function(v1, v2)
+		local k1 = assert(temp[v1]);
+		local k2 = assert(temp[v2]);
+		return k1 < k2
+	end)
+	return H5MonitorServer.tempIPQueue;
 end
 
 -- sort msg queue according to their connection order using IP queue
@@ -154,6 +169,7 @@ end
 -- clear msg queue every specific time interval(now is 3000ms)
 function H5MonitorServer.ClearMsgQueue()
 		H5MonitorServer.msgQueue = {};
+		H5MonitorServer.tempIPQueue = {};
 		LOG.std(nil, "info", "H5MonitorServer", "clear msgsQueue");
 end
 
@@ -184,7 +200,7 @@ local function activate()
 			NPL.accept(msg.tid, nid);
 			LOG.std(nil, "info", "H5MonitorServer local ip", tostring(ip));
 			H5MonitorServer.GetIPQueue(ip);
-			H5MonitorServer.GetNidQueue(nid);
+			H5MonitorServer.GetNidQueue(ip, nid);
 		end
 		if(msg.imageData) then
 			local msgIP = H5MonitorServer.GetIP() or H5MonitorServer.clientIP;

@@ -107,18 +107,12 @@ end
 function H5MonitorClient.TakeScreenShot(width,height)
 	width = tonumber(width);
 	height = tonumber(height);
-	-- ParaEngine.ForceRender();ParaEngine.ForceRender();
 	if(width and height)then
-		ParaMovie.TakeScreenShot_Async(filepath ,true,  width, height, string.format("Mod.HTML5Monitor.H5MonitorClient.Callback();%d",4));
-		--ParaMovie.TakeScreenShot_Async(imageFile, width, height,"");
+		ParaMovie.TakeScreenShot_Async(filepath ,true,  width, height, string.format("Mod.HTML5Monitor.H5MonitorClient.Callback();%d",1));
 	else
-		ParaMovie.TakeScreenShot_Async(filepath,true,  -1, -1, string.format("Mod.HTML5Monitor.H5MonitorClient.Callback();%d",4));
-		--ParaMovie.TakeScreenShot_Async(imageFile,"");
+		ParaMovie.TakeScreenShot_Async(filepath,true,  -1, -1, string.format("Mod.HTML5Monitor.H5MonitorClient.Callback();%d",1));
 	end
-	--local imageObj = ParaIO.open(imageFile, "r");
-	--local imageData = imageObj:GetText(0, -1);
-	--imageObj:close();
-	--return imageData
+
 end
 
 -- client side, to read image info from the msgs transmit by server
@@ -139,19 +133,19 @@ end
 function H5MonitorClient.GetScreenShot()
 	local width, height = H5MonitorClient.GetScreenShotInfo();
 	local screenShot = H5MonitorClient.TakeScreenShot(width,height);
-	--H5MonitorClient.imageData = Encoding.base64(screenShot);
 	local image = {imageData = H5MonitorClient.imageData};
 	return image
 end
 
 -- client side, when get image info from server, send imageData to server
+-- now send msg timer is 2000 ms, it can be reset.
 function H5MonitorClient.Response()
 	if(H5MonitorClient.clientSendTimer) then return end;
 	H5MonitorClient.clientSendTimer = commonlib.Timer:new({callbackFunc = function(timer)
 			local imageData = H5MonitorClient.GetScreenShot();
 			H5MonitorClient.sendStatus = H5MonitorClient.Send(imageData);
 	end})
-	H5MonitorClient.clientSendTimer:Change(0,2000);
+	H5MonitorClient.clientSendTimer:Change(0,1000);
 end
 
 -- test if connected after connecting before sending
