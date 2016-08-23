@@ -155,7 +155,7 @@ end
 -- sort msg queue according to their connection order using IP queue
 function H5MonitorServer.SortMsgQueue()
 	local msgQueue = {};
-	local iplength = #(H5MonitorServer.ipQueue);
+	local iplength = #(H5MonitorServer.tempIPQueue);
 	for i = 1,iplength do
 		local msgData = H5MonitorServer.msgQueue[H5MonitorServer.ipQueue[i]];
 		--LOG.std(nil, "info", "H5MonitorServer msgData", tostring(msgData));
@@ -199,7 +199,9 @@ local function activate()
 			local ip = H5MonitorServer.GetIP();
 			NPL.accept(msg.tid, nid);
 			LOG.std(nil, "info", "H5MonitorServer local ip", tostring(ip));
-			H5MonitorServer.GetIPQueue(ip);
+			if(not H5MonitorServer.ipQueue[ip]) then
+				H5MonitorServer.GetIPQueue(ip);
+			end
 			H5MonitorServer.GetNidQueue(ip, nid);
 		end
 		if(msg.imageData) then

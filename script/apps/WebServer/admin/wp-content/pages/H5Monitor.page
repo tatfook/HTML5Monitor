@@ -98,7 +98,6 @@ if(is_ajax()) then
 			H5MonitorServer.SetScreenShotInfo(nil, H5MonitorServer.nidQueue[msgIP]);
 		end
 		local msgQueue = H5MonitorServer.SortMsgQueue();
-		local screenShot = H5MonitorServer.GetHandleMsg();
 		H5MonitorServer.ClearMsgQueue();
 		wp_send_json(msgQueue, true);
     end)
