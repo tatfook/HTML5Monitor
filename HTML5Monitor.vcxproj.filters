@@ -51,20 +51,8 @@
     <None Include="Mod\HTML5Monitor\H5MonitorServer.lua">
       <Filter>Mod\HTML5Monitor</Filter>
     </None>
-    <None Include="script\apps\WebServer\admin\wp-content\pages\H5MonitorClient.page">
-      <Filter>script\apps\WebServer\admin\wp-content\pages</Filter>
-    </None>
-    <None Include="script\apps\WebServer\admin\wp-content\pages\H5MonitorServer.page">
-      <Filter>script\apps\WebServer\admin\wp-content\pages</Filter>
-    </None>
     <None Include="script\apps\WebServer\admin\wp-content\pages\h5monitor\app.js">
       <Filter>script\apps\WebServer\admin\wp-content\pages\h5monitor</Filter>
-    </None>
-    <None Include="script\apps\WebServer\admin\wp-content\pages\h5monitor\controllers\h5MonitorClientController.js">
-      <Filter>script\apps\WebServer\admin\wp-content\pages\h5monitor\controllers</Filter>
-    </None>
-    <None Include="script\apps\WebServer\admin\wp-content\pages\h5monitor\controllers\h5MonitorServerController.js">
-      <Filter>script\apps\WebServer\admin\wp-content\pages\h5monitor\controllers</Filter>
     </None>
     <None Include="script\apps\WebServer\admin\wp-content\pages\h5monitor\templates\H5MonitorClientTemplate.html">
       <Filter>script\apps\WebServer\admin\wp-content\pages\h5monitor\templates</Filter>
@@ -76,11 +64,11 @@
     <None Include="StartServer.bat" />
     <None Include="StartClient1.bat" />
     <None Include="StartClient0.bat" />
-    <None Include="script\apps\WebServer\admin\wp-content\pages\h5monitor\controllers\h5MonitorController.js">
-      <Filter>script\apps\WebServer\admin\wp-content\pages\h5monitor\controllers</Filter>
+    <None Include="script\apps\WebServer\admin\wp-content\pages\Monitor.page">
+      <Filter>script\apps\WebServer\admin\wp-content\pages\h5monitor</Filter>
     </None>
-    <None Include="script\apps\WebServer\admin\wp-content\pages\H5Monitor.page">
-      <Filter>script\apps\WebServer\admin\wp-content\pages</Filter>
+    <None Include="script\apps\WebServer\admin\wp-content\pages\monitor\controllers\h5MonitorController.js">
+      <Filter>script\apps\WebServer\admin\wp-content\pages\h5monitor\controllers</Filter>
     </None>
   </ItemGroup>
 </Project>

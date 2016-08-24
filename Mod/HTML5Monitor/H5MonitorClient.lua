@@ -138,7 +138,7 @@ function H5MonitorClient.GetScreenShot()
 end
 
 -- client side, when get image info from server, send imageData to server
--- now send msg timer is 2000 ms, it can be reset.
+-- now send msg timer is 1000 ms, it can be reset.
 function H5MonitorClient.Response()
 	if(H5MonitorClient.clientSendTimer) then return end;
 	H5MonitorClient.clientSendTimer = commonlib.Timer:new({callbackFunc = function(timer)
