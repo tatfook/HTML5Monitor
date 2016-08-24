@@ -38,7 +38,7 @@ local function GetServer()
 	local server = request:get("server");
 	local ip = string.match(server,"^(.*):.*$");	
 	local port = string.match(server,"^.*:(.*)$");	
-	LOG.std(nil, "info","serverInfo" ,"ip:%s, port: %s", ip, port);
+	--LOG.std(nil, "info","serverInfo" ,"ip:%s, port: %s", ip, port);
 	return ip, port;
 end
 
@@ -47,7 +47,7 @@ local function GetClient()
 	local client = request:get("client")
 	local ip = string.match(client, "^(.*):.*$");
 	local port = string.match(client,"^.*:(.*)$");	
-	LOG.std(nil, "info", "clientInfo","ip:%s, port: %s", ip, port);
+	--LOG.std(nil, "info", "clientInfo","ip:%s, port: %s", ip, port);
 	return ip, port;
 end
 

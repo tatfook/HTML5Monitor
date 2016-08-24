@@ -89,7 +89,7 @@ function H5MonitorClient.Send(msg,is_first)
 		msg.nid = nid;
 	end
 	local res = NPL.activate(string.format("(%s)%s:%s", "gl",nid,server_file), msg);
-	LOG.std(nil, "info", "H5MonitorClient", "res:%s",tostring(res));
+	--LOG.std(nil, "info", "H5MonitorClient", "res:%s",tostring(res));
 	return res;
 end
 
@@ -125,7 +125,7 @@ function H5MonitorClient.GetScreenShotInfo()
 			height = serverMsgs.height;
 		end
 	end
-	LOG.std(nil, "info","client GetScreenShotInfo", "width:%s, height:%s ", width, height);
+	--LOG.std(nil, "info","client GetScreenShotInfo", "width:%s, height:%s ", width, height);
 	return width, height;
 end
 
@@ -154,7 +154,7 @@ function H5MonitorClient.Ping()
 	clientPingTimer = commonlib.Timer:new({callbackFunc = function(timer)
 		local clientStatus = H5MonitorClient.GetHandleMsg();
 		H5MonitorClient.Send({ping = true});
-		LOG.std(nil, "info","client status","client ping status: %s" ,tostring(clientStatus.pingSuccess));
+		--LOG.std(nil, "info","client status","client ping status: %s" ,tostring(clientStatus.pingSuccess));
 		if(clientStatus.pingSuccess) then
 			clientPingTimer:Change();
 		end
@@ -164,14 +164,14 @@ end
 
 local function activate()
 	if(msg)then
-		LOG.std(nil, "info", "H5MonitorClient", "got a message");
+		--LOG.std(nil, "info", "H5MonitorClient", "got a message");
 		NPL.accept(msg.tid, nid);
 		H5MonitorClient.handle_msgs = msg;
 		if(msg.pingSuccess or (msg.width and msg.height)) then
 			H5MonitorClient.Response();
 		elseif (msg.ping) then
 			H5MonitorClient.Send({pingSuccess = H5MonitorClient.pingCounter()});
-			LOG.std(nil, "info","client", "server ping status: %s" , tostring(msg.ping));
+			--LOG.std(nil, "info","client", "server ping status: %s" , tostring(msg.ping));
 		end
 	end
 end

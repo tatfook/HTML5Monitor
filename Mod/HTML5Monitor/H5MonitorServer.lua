@@ -80,7 +80,7 @@ end
 function H5MonitorServer.Send(msg, usernid)
 	local nid = usernid or msg.nid or msg.tid or nid;
 	local res = NPL.activate(string.format("%s:%s", nid, client_file), msg);
-	LOG.std(nil, "info", "H5MonitorServer", "res:%s",tostring(res));
+	--LOG.std(nil, "info", "H5MonitorServer", "res:%s",tostring(res));
 	return res;
 end
 
@@ -156,7 +156,7 @@ end
 function H5MonitorServer.SortMsgQueue()
 	local msgQueue = {};
 	local iplength = #(H5MonitorServer.tempIPQueue);
-	LOG.std(nil, "info", "H5MonitorServer iplength", tostring(iplength));
+	--LOG.std(nil, "info", "H5MonitorServer iplength", tostring(iplength));
 	for i = 1,iplength do
 		local msgData = H5MonitorServer.msgQueue[H5MonitorServer.SortTempIPQueue()[i]];
 		--LOG.std(nil, "info", "H5MonitorServer msgData", tostring(msgData));
@@ -171,7 +171,7 @@ end
 function H5MonitorServer.ClearMsgQueue()
 		H5MonitorServer.msgQueue = {};
 		H5MonitorServer.tempIPQueue = {};
-		LOG.std(nil, "info", "H5MonitorServer", "clear msgsQueue");
+		--LOG.std(nil, "info", "H5MonitorServer", "clear msgsQueue");
 end
 
 -- test if connected after connecting before sending
@@ -180,7 +180,7 @@ function H5MonitorServer.Ping()
 	serverPingTimer = commonlib.Timer:new({callbackFunc = function(timer)
 		local serverStatus = H5MonitorServer.GetHandleMsg();
 		H5MonitorServer.Send({ping = true});
-		LOG.std(nil, "info","server status", "server ping status: %s" ,tostring(serverStatus.pingSuccess));
+		--LOG.std(nil, "info","server status", "server ping status: %s" ,tostring(serverStatus.pingSuccess));
 		if(serverStatus.pingSuccess) then
 			serverPingTimer:Change();
 		end
@@ -191,15 +191,15 @@ end
 -- main function
 local function activate()
 	if(msg) then
-		LOG.std(nil, "info", "H5MonitorServer", "got a message");
+		--LOG.std(nil, "info", "H5MonitorServer", "got a message");
 		H5MonitorServer.handle_msgs = msg;
 		H5MonitorServer.handle_msgsIP = H5MonitorServer.GetIP();
 		if(msg.tid) then
 			nid = getnid();
-			LOG.std(nil, "info", "H5MonitorServer nid: ", nid);
+			--LOG.std(nil, "info", "H5MonitorServer nid: ", nid);
 			local ip = H5MonitorServer.GetIP();
 			NPL.accept(msg.tid, nid);
-			LOG.std(nil, "info", "H5MonitorServer local ip", tostring(ip));
+			--LOG.std(nil, "info", "H5MonitorServer local ip", tostring(ip));
 			if(not H5MonitorServer.nidQueue[ip]) then
 				H5MonitorServer.GetIPQueue(ip);
 			end
@@ -213,7 +213,7 @@ local function activate()
 			LOG.std(nil, "info","server", "client ping status: %s" ,tostring(msg.ping));
 		elseif(tonumber(msg.pingSuccess) == 0) then
 			H5MonitorServer.SetScreenShotInfo();
-			LOG.std(nil, "info"," server ", "client pingSuccess status: %s" ,tostring(msg.pingSuccess));
+			--LOG.std(nil, "info"," server ", "client pingSuccess status: %s" ,tostring(msg.pingSuccess));
 		end
 	end	
 end
