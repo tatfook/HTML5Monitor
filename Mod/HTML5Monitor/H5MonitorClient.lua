@@ -6,46 +6,25 @@ Revised: MarxWolf 2016/07/23
 Desc: 
 use the lib:
 ------------------------------------------------------------
-NPL.load("(gl)Mod/HTML5Monitor/H5MonitorClient.lua");
-local H5MonitorClient = commonlib.gettable("Mod.HTML5Monitor.H5MonitorClient");
-H5MonitorClient.StartLocalWebServer();
-
-NPL.load("(gl)Mod/HTML5Monitor/H5MonitorClient.lua");
-local H5MonitorClient = commonlib.gettable("Mod.HTML5Monitor.H5MonitorClient");
-H5MonitorClient.Start();
-
-NPL.load("(gl)Mod/HTML5Monitor/H5MonitorClient.lua");
-local H5MonitorClient = commonlib.gettable("Mod.HTML5Monitor.H5MonitorClient");
-H5MonitorClient.Send({"hello world"});
+This is a program not a library. 
+It should be used with H5MonitorServer together.
+User can self define the size of the screenShot image in H5MonitorClient.GetScreenShotInfo().
 ------------------------------------------------------------
 ]]
 NPL.load("(gl)script/ide/commonlib.lua"); 
 NPL.load("(gl)script/ide/timer.lua");
-NPL.load("(gl)script/ide/System/Encoding/base64.lua");
+
 local H5MonitorClient = commonlib.gettable("Mod.HTML5Monitor.H5MonitorClient");
-local Encoding = commonlib.gettable("System.Encoding");
 local client_file = "Mod/HTML5Monitor/H5MonitorClient.lua";
 local server_file = "Mod/HTML5Monitor/H5MonitorServer.lua";
-H5MonitorClient.handle_msgs = nil;
-
 local filepath = "temp/monitor_screenshot.png";
+H5MonitorClient.handle_msgs = nil;
+local nid = "stu1";
 
 function H5MonitorClient.AddPublicFiles()
     NPL.AddPublicFile(client_file, 7001);
     NPL.AddPublicFile(server_file, 7002);
 end
-
--- clousre to make an unique nid
-function H5MonitorClient.GetNid()
-	local i = 0
-	return function()
-		i = i + 1;
-		local nid = "stu" .. i
-		return nid;
-	end
-end
-local getnid = H5MonitorClient.GetNid();
-local nid = "stu1";
 
 function H5MonitorClient.GetCounter()
 	local i = -1; 
@@ -58,8 +37,6 @@ H5MonitorClient.pingCounter = H5MonitorClient.GetCounter();
 
 function H5MonitorClient.Start(host,port)
     H5MonitorClient.AddPublicFiles();
-   -- since this is a pure client, no need to listen to any port. 
-   -- NPL.StartNetServer("0", "0");
    
 	host= host or "127.0.0.1";
 	port = port or "60001";
@@ -68,7 +45,7 @@ function H5MonitorClient.Start(host,port)
 	port = tostring(port);
 	local params = {host = host, port = port, nid = nid};
 	NPL.AddNPLRuntimeAddress(params);
-	H5MonitorClient.Send({},true)
+	H5MonitorClient.Send({},true);
 	H5MonitorClient.handle_msgs = { client_connected = true };
     LOG.std(nil, "info", "H5MonitorClient", "Connect host:%s port: %s",host,port);
 end
@@ -78,7 +55,7 @@ function H5MonitorClient.Callback()
 	local res = msg.res;
 	local sequence = msg.s;
 	local size = msg.size;
-	H5MonitorClient.imageData = msg.base64;
+	H5MonitorClient.screenShotData = msg.base64;
 end
 
 function H5MonitorClient.Stop()
@@ -112,10 +89,9 @@ function H5MonitorClient.TakeScreenShot(width,height)
 	else
 		ParaMovie.TakeScreenShot_Async(filepath,true,  -1, -1, string.format("Mod.HTML5Monitor.H5MonitorClient.Callback();%d",1));
 	end
-
 end
 
--- client side, to read image info from the msgs transmit by server
+-- client side, to read screenShot info from the msgs transmit by server, width & height can be user defined
 function H5MonitorClient.GetScreenShotInfo()
 	local serverMsgs = H5MonitorClient.GetHandleMsg();
 	local width, height = 256, 256;
@@ -129,23 +105,23 @@ function H5MonitorClient.GetScreenShotInfo()
 	return width, height;
 end
 
--- client side, to get image data, and it will return a table {"imageData":imageData}
+-- client side, to get screenShot data, and it will return a table {"screenShotData":screenShotData}
 function H5MonitorClient.GetScreenShot()
 	local width, height = H5MonitorClient.GetScreenShotInfo();
-	local screenShot = H5MonitorClient.TakeScreenShot(width,height);
-	local image = {imageData = H5MonitorClient.imageData};
-	return image
+	H5MonitorClient.TakeScreenShot(width,height);
+	local screenShot = {screenShotData = H5MonitorClient.screenShotData};
+	return screenShot;
 end
 
--- client side, when get image info from server, send imageData to server
--- now send msg timer is 1000 ms, it can be reset.
+-- client side, when get screenShot info from server, send screenShotData to server
+-- now send msg timer is 750 ms, it can be reset.
 function H5MonitorClient.Response()
 	if(H5MonitorClient.clientSendTimer) then return end;
 	H5MonitorClient.clientSendTimer = commonlib.Timer:new({callbackFunc = function(timer)
-			local imageData = H5MonitorClient.GetScreenShot();
-			H5MonitorClient.sendStatus = H5MonitorClient.Send(imageData);
+			local screenShotData = H5MonitorClient.GetScreenShot();
+			H5MonitorClient.sendStatus = H5MonitorClient.Send(screenShotData);
 	end})
-	H5MonitorClient.clientSendTimer:Change(0,1000);
+	H5MonitorClient.clientSendTimer:Change(0,750);
 end
 
 -- test if connected after connecting before sending

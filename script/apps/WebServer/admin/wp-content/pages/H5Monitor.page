@@ -79,13 +79,12 @@ if(is_ajax()) then
 			local msgIP = msgIPQueue[index+1];
 			H5MonitorServer.SetScreenShotInfo(true, H5MonitorServer.nidQueue[msgIP]);
 		end
-		local largeScreenShot = H5MonitorServer.GetHandleMsg();
 		local msgQueue = H5MonitorServer.SortMsgQueue();
-		local largemsg = msgQueue[index + 1];
-		local large = {imageData = largemsg}
+		local largeScreenShotData = msgQueue[index + 1];
+		local largeScreenShot = {largeScreenShotData = largeScreenShotData}
 		--wp_send_json(largeScreenShot,true);
 		H5MonitorServer.ClearMsgQueue();
-		wp_send_json(large, true);
+		wp_send_json(largeScreenShot, true);
 	end)
 
 -- server side,	

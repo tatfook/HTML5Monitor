@@ -17,10 +17,10 @@
 		<div class="col-md-4 col-lg-3">
 			<input type="image" id="add_new_client" class="img-rounded" ng-click="addNewClient()" src="wp-includes/img/add_new_client.png" />
 		</div>
-		<div ng-repeat="image in imageArray"> 
+		<div ng-repeat="screenShot in screenShotArray"> 
 			<div class="col-md-4 col-lg-3">
 				<a ng-click="showLargeScreenShot($index)" > 
-					<img width="256" height="256" class="img-rounded" ng-src="data:image/png;base64,{{image}}"  />
+					<img width="256" height="256" class="img-rounded" ng-src="data:image/png;base64,{{screenShot}}"  />
 				</a>
 				<center><span class="label label-primary">IP: {{screenShotInfo[$index]}}</span></center>
 			</div>
@@ -54,6 +54,6 @@
 
 <script type="text/ng-template" id="showLargeScreenShotDialog">
 	<div class="ngdialog-message">
-		<img ng-src="{{largeImageUrl}}" height="400" width="400" class="img-rounded" />
+		<img ng-src="{{largeScreenShotUrl}}" height="400" width="400" class="img-rounded" />
 	</div>
 </script>

@@ -6,17 +6,8 @@ Revised: MarxWolf 2016/07/23
 Desc: 
 use the lib:
 ------------------------------------------------------------
-NPL.load("(gl)Mod/HTML5Monitor/H5MonitorServer.lua");
-local H5MonitorServer = commonlib.gettable("Mod.HTML5Monitor.H5MonitorServer");
-H5MonitorServer.StartLocalWebServer();
-
-NPL.load("(gl)Mod/HTML5Monitor/H5MonitorServer.lua");
-local H5MonitorServer = commonlib.gettable("Mod.HTML5Monitor.H5MonitorServer");
-H5MonitorServer.Start();
-
-NPL.load("(gl)Mod/HTML5Monitor/H5MonitorServer.lua");
-local H5MonitorServer = commonlib.gettable("Mod.HTML5Monitor.H5MonitorServer");
-H5MonitorServer.Send({"hello world 111"});
+This is a program not a library.
+It should be used with H5MonitorClient together.
 ------------------------------------------------------------
 ]]
 NPL.load("(gl)script/ide/commonlib.lua"); 
@@ -25,7 +16,6 @@ NPL.load("(gl)script/ide/timer.lua");
 local H5MonitorServer = commonlib.gettable("Mod.HTML5Monitor.H5MonitorServer");
 local client_file = "Mod/HTML5Monitor/H5MonitorClient.lua";
 local server_file = "Mod/HTML5Monitor/H5MonitorServer.lua";
-
 local table_insert = table.insert;
 local table_remove = table.remove;
 
@@ -41,7 +31,7 @@ function H5MonitorServer.AddPublicFiles()
     NPL.AddPublicFile(server_file, 7002);
 end
 
--- clousre to make an unique nid
+-- clousre to make an unique nid for each connected client
 function H5MonitorServer.GetNid()
 	local i = 0
 	return function()
@@ -50,7 +40,6 @@ function H5MonitorServer.GetNid()
 		return nid;
 	end
 end
-
 local getnid = H5MonitorServer.GetNid();
 local nid;
 
@@ -97,19 +86,19 @@ function H5MonitorServer.GetClientIP(ip)
 	H5MonitorServer.clientIP = ip;
 end
 
--- @param: is_large, to save bandwidth and time, usually set small size image(nil parameter), when necessary, set large size
+-- @param: is_large, to save bandwidth and time, usually set small size screenShot(nil parameter), when necessary, set large size
 function H5MonitorServer.SetScreenShotInfo(is_large, usernid)
 	local width, height = 256, 256;
 	if (is_large) then
 		width = 400;  -- need to be replaced by the screen info
 		height = 400; 
 	end
-	local imageInfo = {width = width, height = height};
-	LOG.std(nil, "info", "server SetScreenShotInfo" ,"width:%s, height: %s", width, height);
-	H5MonitorServer.Send(imageInfo, usernid);
+	local screenShotInfo = {width = width, height = height};
+	--LOG.std(nil, "info", "server SetScreenShotInfo" ,"width:%s, height: %s", width, height);
+	H5MonitorServer.Send(screenShotInfo, usernid);
 end
 
--- server side, when receive image info request from client, send image info to client
+-- server side, when receive screenShot info request from client, send screenShot info to client
 function H5MonitorServer.Response()
 	
 end
@@ -129,11 +118,11 @@ function H5MonitorServer.GetNidQueue(ip, nid)
 	H5MonitorServer.nidQueue[ip] = nid;
 end
 
--- get msg queue and index the imageData using IP
+-- get msg queue and index the screenShotData using IP
 function H5MonitorServer.GetMsgQueue(msg, msgIP)	
 	local contain = H5MonitorServer.msgQueue[msgIP];
 	if(not contain) then
-		H5MonitorServer.msgQueue[msgIP] = msg.imageData;
+		H5MonitorServer.msgQueue[msgIP] = msg.screenShotData;
 		H5MonitorServer.GetTempIPQueue(msgIP);
 	end
 end
@@ -205,7 +194,7 @@ local function activate()
 			end
 			H5MonitorServer.GetNidQueue(ip, nid);
 		end
-		if(msg.imageData) then
+		if(msg.screenShotData) then
 			local msgIP = H5MonitorServer.GetIP() or H5MonitorServer.clientIP;
 			H5MonitorServer.GetMsgQueue(msg, msgIP);
 		elseif(msg.ping) then
