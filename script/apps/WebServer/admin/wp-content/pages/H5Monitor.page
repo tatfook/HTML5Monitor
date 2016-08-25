@@ -12,12 +12,8 @@ wp_enqueue_script("angular",					"/wp-includes/js/angular/angular.min.js");
 wp_enqueue_script("ngStorage",					"/wp-includes/js/angular/ngStorage.js");
 wp_enqueue_script("ngSanitize",					"/wp-includes/js/angular/angular-sanitize.min.js");
 
-wp_enqueue_script("ngAnimate",                  "/wp-includes/js/angular-animate.min.js");
-wp_enqueue_script("ui-bootstrap",               "/wp-includes/js/ui-bootstrap-2.0.0.min.js");
-
 wp_enqueue_script("ngDialog",                   "/wp-includes/js/ngDialog.min.js");
 wp_enqueue_style("ngDialogcss",                 "/wp-admin/css/ngDialog.min.css");
-wp_enqueue_style("ngDialog-theme-default",      "/wp-admin/css/ngDialog-theme-default.min.css");
 wp_enqueue_style("ngDialog-theme-plain",	    "/wp-admin/css/ngDialog-theme-plain.min.css");
 
 wp_enqueue_script("H5Monitor_App",			    "/wp-content/pages/h5monitor/app.js");

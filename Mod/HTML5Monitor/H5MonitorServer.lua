@@ -8,6 +8,7 @@ use the lib:
 ------------------------------------------------------------
 This is a program not a library.
 It should be used with H5MonitorClient together.
+User can self define the size of large screen shot image in H5MonitorServer.SetScreenShotInfo();
 ------------------------------------------------------------
 ]]
 NPL.load("(gl)script/ide/commonlib.lua"); 
@@ -136,7 +137,7 @@ function H5MonitorServer.SortTempIPQueue()
 	table.sort(H5MonitorServer.tempIPQueue, function(v1, v2)
 		local k1 = assert(temp[v1]);
 		local k2 = assert(temp[v2]);
-		return k1 < k2
+		return k1 < k2;
 	end)
 	return H5MonitorServer.tempIPQueue;
 end

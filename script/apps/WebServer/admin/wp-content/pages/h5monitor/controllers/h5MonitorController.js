@@ -1,7 +1,7 @@
 angular.module('H5Monitor_App', ['ngStorage', 'ngDialog'])
 .component("monitor", {
     templateUrl: "/wp-content/pages/h5monitor/templates/H5MonitorTemplate.html",
-    controller: function ($scope, $http, $interval, ngDialog) {
+    controller: function ($scope, $http, $interval, $timeout, ngDialog) {
         if (Page)
             Page.ShowSideBar(false);
 
@@ -21,6 +21,11 @@ angular.module('H5Monitor_App', ['ngStorage', 'ngDialog'])
                     });
                 }
             });
+            if (ngDialog.isOpen("connectInfoDialogID")) {
+                $timeout(function () {
+                    ngDialog.close("connectInfoDialogID");
+                }, 2000);
+            }
         }
 
         $scope.doServerStart = function () {
