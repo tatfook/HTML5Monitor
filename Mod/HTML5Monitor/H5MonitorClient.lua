@@ -26,15 +26,7 @@ function H5MonitorClient.AddPublicFiles()
     NPL.AddPublicFile(server_file, 7002);
 end
 
-function H5MonitorClient.GetCounter()
-	local i = -1; 
-	return function()
-		i = i + 1;
-		return i;
-	end
-end
-H5MonitorClient.pingCounter = H5MonitorClient.GetCounter();
-
+-- connect a server
 function H5MonitorClient.Start(host,port)
     H5MonitorClient.AddPublicFiles();
    
@@ -50,6 +42,7 @@ function H5MonitorClient.Start(host,port)
     LOG.std(nil, "info", "H5MonitorClient", "Connect host:%s port: %s",host,port);
 end
 
+-- async get screenShot data encoded by base64
 function H5MonitorClient.Callback()
 	--commonlib.log("TestTakeScreenShot received a msg %s \n",commonlib.serialize(msg));
 	local res = msg.res;
@@ -81,6 +74,7 @@ function H5MonitorClient.StartLocalWebServer(host,port)
 	WebServer:Start("script/apps/WebServer/admin", (host or "0.0.0.0"), port or 8091);
 end
 
+-- get screenShot
 function H5MonitorClient.TakeScreenShot(width,height)
 	width = tonumber(width);
 	height = tonumber(height);
@@ -146,7 +140,7 @@ local function activate()
 		if(msg.pingSuccess or (msg.width and msg.height)) then
 			H5MonitorClient.Response();
 		elseif (msg.ping) then
-			H5MonitorClient.Send({pingSuccess = H5MonitorClient.pingCounter()});
+			H5MonitorClient.Send({pingSuccess = true});
 			--LOG.std(nil, "info","client", "server ping status: %s" , tostring(msg.ping));
 		end
 	end

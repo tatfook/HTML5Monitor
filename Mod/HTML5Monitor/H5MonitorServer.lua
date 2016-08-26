@@ -18,8 +18,14 @@ local H5MonitorServer = commonlib.gettable("Mod.HTML5Monitor.H5MonitorServer");
 local client_file = "Mod/HTML5Monitor/H5MonitorClient.lua";
 local server_file = "Mod/HTML5Monitor/H5MonitorServer.lua";
 local table_insert = table.insert;
-local table_remove = table.remove;
 
+
+-- handle_msgs: the msg received each time
+-- handle_msgsIP: the ip address of msg sender corresponding to handle_msgs
+-- msgQueue: msg queue in a specific time interval
+-- tempIPQueue: ip queue corresponding to msgQueue
+-- ipQueue: ip queue record the connected client ip address arrange by their connection time
+-- nidQueue: nide queue corresponding to ipQueue
 H5MonitorServer.handle_msgs = nil;
 H5MonitorServer.handle_msgsIP = nil;
 H5MonitorServer.msgQueue = {};
@@ -44,6 +50,7 @@ end
 local getnid = H5MonitorServer.GetNid();
 local nid;
 
+-- connect a client 
 function H5MonitorServer.Start(host,port)
     H5MonitorServer.AddPublicFiles();
 	host= host or "127.0.0.1";
@@ -67,6 +74,7 @@ function H5MonitorServer.Stop()
 
 end
 
+-- send msg to specific client
 function H5MonitorServer.Send(msg, usernid)
 	local nid = usernid or msg.nid or msg.tid or nid;
 	local res = NPL.activate(string.format("%s:%s", nid, client_file), msg);
@@ -201,7 +209,7 @@ local function activate()
 		elseif(msg.ping) then
 			H5MonitorServer.Send({pingSuccess = true});
 			LOG.std(nil, "info","server", "client ping status: %s" ,tostring(msg.ping));
-		elseif(tonumber(msg.pingSuccess) == 0) then
+		elseif(msg.pingSuccess) then
 			H5MonitorServer.SetScreenShotInfo();
 			--LOG.std(nil, "info"," server ", "client pingSuccess status: %s" ,tostring(msg.pingSuccess));
 		end
