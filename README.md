@@ -6,30 +6,12 @@ This is the NPL project to help teachers monitor the students activity in paracr
 
 # Start Server 
 ```lua
-NPL.load("(gl)Mod/HTML5Monitor/H5MonitorServer.lua");
-local H5MonitorServer = commonlib.gettable("Mod.HTML5Monitor.H5MonitorServer");
-H5MonitorServer.StartLocalWebServer();
-
-NPL.load("(gl)Mod/HTML5Monitor/H5MonitorServer.lua");
-local H5MonitorServer = commonlib.gettable("Mod.HTML5Monitor.H5MonitorServer");
-H5MonitorServer.Start();
-
-NPL.load("(gl)Mod/HTML5Monitor/H5MonitorServer.lua");
-local H5MonitorServer = commonlib.gettable("Mod.HTML5Monitor.H5MonitorServer");
-H5MonitorServer.Send({"hello world 111"});
+This is a program not a library.      
+You should use it with H5MonitorClient together.
 ```
 # Start Client
 ```lua
-NPL.load("(gl)Mod/HTML5Monitor/H5MonitorClient.lua");
-local H5MonitorClient = commonlib.gettable("Mod.HTML5Monitor.H5MonitorClient");
-H5MonitorClient.StartLocalWebServer();
-
-NPL.load("(gl)Mod/HTML5Monitor/H5MonitorClient.lua");
-local H5MonitorClient = commonlib.gettable("Mod.HTML5Monitor.H5MonitorClient");
-H5MonitorClient.Start();
-
-NPL.load("(gl)Mod/HTML5Monitor/H5MonitorClient.lua");
-local H5MonitorClient = commonlib.gettable("Mod.HTML5Monitor.H5MonitorClient");
-H5MonitorClient.Send({"hello world"});
+This is a program not a library.
+You should use it with H5MonitorServer together.
 ```
 
