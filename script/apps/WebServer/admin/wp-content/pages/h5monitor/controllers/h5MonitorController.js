@@ -21,11 +21,11 @@ angular.module('H5Monitor_App', ['ngStorage', 'ngDialog'])
                     });
                 }
             });
-            if (ngDialog.isOpen("connectInfoDialogID")) {
+            
                 $timeout(function () {
                     ngDialog.close("connectInfoDialogID");
                 }, 2000);
-            }
+            
         }
 
         $scope.doServerStart = function () {
