@@ -165,7 +165,7 @@ function H5MonitorServer.SortMsgQueue()
 	return msgQueue;
 end
 
--- clear msg queue every specific time interval(now is 3000ms)
+-- clear msg queue every specific time interval(now is 1000ms)
 function H5MonitorServer.ClearMsgQueue()
 		H5MonitorServer.msgQueue = {};
 		H5MonitorServer.tempIPQueue = {};
@@ -184,7 +184,9 @@ function H5MonitorServer.Ping()
 				serverPingTimer:Change();
 			end
 		else
-			serverPingTimer:Change(1000, nil);
+			commonlib.TimerManager.SetTimeout(function()
+				serverPingTimer:Change();
+			end, 1000);
 		end
 	end})
 	serverPingTimer:Change(0, 100);
@@ -211,7 +213,7 @@ local function activate()
 			local msgIP = H5MonitorServer.GetIP() or H5MonitorServer.clientIP;
 			H5MonitorServer.GetMsgQueue(msg, msgIP);
 		elseif(msg.ping) then
-			H5MonitorServer.Send({pingSuccess = true});
+			H5MonitorServer.Send({pingSuccess = true}, H5MonitorServer.nidQueue[H5MonitorServer.handle_msgsIP]);
 			LOG.std(nil, "info","server", "client ping status: %s" ,tostring(msg.ping));
 		elseif(msg.pingSuccess) then
 			H5MonitorServer.SetScreenShotInfo();

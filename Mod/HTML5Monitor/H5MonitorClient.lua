@@ -110,6 +110,7 @@ end
 
 -- client side, when get screenShot info from server, send screenShotData to server
 -- now send msg timer is 750 ms, it can be reset.
+-- connection test timer is set to 20000 ms
 function H5MonitorClient.Response()
 	if(H5MonitorClient.clientSendTimer) then return end;
 	H5MonitorClient.clientSendTimer = commonlib.Timer:new({callbackFunc = function(timer)
@@ -117,6 +118,21 @@ function H5MonitorClient.Response()
 			H5MonitorClient.sendStatus = H5MonitorClient.Send(screenShotData);
 	end})
 	H5MonitorClient.clientSendTimer:Change(0,750);
+	H5MonitorClient.connectionTimer = commonlib.Timer:new({callbackFunc = function(timer)
+		LOG.std(nil, "info", "H5MonitorClient", "ping connection");
+		H5MonitorClient.handle_msgs = {};
+		H5MonitorClient.Send({ping = true});
+		commonlib.TimerManager.SetTimeout(function()
+			local isConnection = H5MonitorClient.GetHandleMsg();
+			if(isConnection.pingSuccess) then
+			else
+				H5MonitorClient.clientSendTimer:Change();
+				H5MonitorClient.connectionTimer:Change();
+			end
+		end, 1000);
+	end})
+	H5MonitorClient.connectionTimer:Change(0, 20000);
+
 end
 
 -- test if connected after connecting before sending
@@ -124,14 +140,14 @@ function H5MonitorClient.Ping()
 	H5MonitorClient.clientPingTimer = commonlib.Timer:new({callbackFunc = function(timer)
 		local clientStatus = H5MonitorClient.GetHandleMsg();
 		H5MonitorClient.Send({ping = true});
-		LOG.std(nil, "info","client status","client ping status:");
 		if(clientStatus) then
 			if(clientStatus.pingSuccess) then
 				H5MonitorClient.clientPingTimer:Change();
 			end
 		else
-			H5MonitorClient.clientPingTimer:Change(1000, nil);
-			LOG.std(nil,"warning", "client","cannot connect to server");
+			commonlib.TimerManager.SetTimeout(function()
+				H5MonitorClient.clientPingTimer:Change();
+			end, 1000);
 		end
 	end})
 	H5MonitorClient.clientPingTimer:Change(0, 100);
