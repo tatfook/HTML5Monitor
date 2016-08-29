@@ -179,8 +179,12 @@ function H5MonitorServer.Ping()
 		local serverStatus = H5MonitorServer.GetHandleMsg();
 		H5MonitorServer.Send({ping = true});
 		--LOG.std(nil, "info","server status", "server ping status: %s" ,tostring(serverStatus.pingSuccess));
-		if(serverStatus.pingSuccess) then
-			serverPingTimer:Change();
+		if(serverStatus) then
+			if(serverStatus.pingSuccess) then
+				serverPingTimer:Change();
+			end
+		else
+			serverPingTimer:Change(1000, nil);
 		end
 	end})
 	serverPingTimer:Change(0, 100);

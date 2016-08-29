@@ -7,25 +7,40 @@ angular.module('H5Monitor_App', ['ngStorage', 'ngDialog'])
 
         var screenShotTimer;
         var largeScreenShotTimer;
+        var clientPingTimer;
         $scope.screenShotArray = {};
 
         $scope.doClientStart = function () {
             var server = $("#server").val();
             var url = "ajax/H5Monitor?action=monitor_client_start&server=" + server;
             $http.get(url).then(function (response) {
-                if (response.data.status == 0) {
+
+            });
+
+            clientPingTimer = $interval(function () {
+                $scope.doClientPing();
+            }, 50);
+
+            $timeout(function () {
+                $interval.cancel(clientPingTimer);
+                clientPingTimer = undefined;
+                ngDialog.close("connectSuccessDialogID");
+            }, 1500);
+        }
+
+        $scope.doClientPing = function () {
+            if ($scope.clientPingStatus) return;
+            var url = "ajax/H5Monitor?action=monitor_client_ping_status";
+            $http.get(url).then(function (response) {
+                $scope.clientPingStatus = response.data.pingSuccess;
+                if (response.data.pingSuccess) {
                     ngDialog.open({
-                        id: 'connectInfoDialogID',
-                        template: 'connectInfoDialog', className: 'ngdialog-theme-plain',
+                        id: 'connectSuccessDialogID',
+                        template: 'connectSuccessDialog', className: 'ngdialog-theme-plain',
                         scope: $scope,
                     });
                 }
             });
-            if (ngDialog.isOpen("connectInfoDialogID")) {
-                $timeout(function () {
-                    ngDialog.close("connectInfoDialogID");
-                }, 2000);
-            }
         }
 
         $scope.doServerStart = function () {

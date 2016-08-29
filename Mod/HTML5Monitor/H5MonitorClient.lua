@@ -38,7 +38,7 @@ function H5MonitorClient.Start(host,port)
 	local params = {host = host, port = port, nid = nid};
 	NPL.AddNPLRuntimeAddress(params);
 	H5MonitorClient.Send({},true);
-	H5MonitorClient.handle_msgs = { client_connected = true };
+	--H5MonitorClient.handle_msgs = { client_connected = true };
     LOG.std(nil, "info", "H5MonitorClient", "Connect host:%s port: %s",host,port);
 end
 
@@ -96,7 +96,7 @@ function H5MonitorClient.GetScreenShotInfo()
 			height = serverMsgs.height;
 		end
 	end
-	--LOG.std(nil, "info","client GetScreenShotInfo", "width:%s, height:%s ", width, height);
+	LOG.std(nil, "info","client GetScreenShotInfo", "width:%s, height:%s ", width, height);
 	return width, height;
 end
 
@@ -124,9 +124,14 @@ function H5MonitorClient.Ping()
 	H5MonitorClient.clientPingTimer = commonlib.Timer:new({callbackFunc = function(timer)
 		local clientStatus = H5MonitorClient.GetHandleMsg();
 		H5MonitorClient.Send({ping = true});
-		--LOG.std(nil, "info","client status","client ping status: %s" ,tostring(clientStatus.pingSuccess));
-		if(clientStatus.pingSuccess) then
-			H5MonitorClient.clientPingTimer:Change();
+		LOG.std(nil, "info","client status","client ping status:");
+		if(clientStatus) then
+			if(clientStatus.pingSuccess) then
+				H5MonitorClient.clientPingTimer:Change();
+			end
+		else
+			H5MonitorClient.clientPingTimer:Change(1000, nil);
+			LOG.std(nil,"warning", "client","cannot connect to server");
 		end
 	end})
 	H5MonitorClient.clientPingTimer:Change(0, 100);

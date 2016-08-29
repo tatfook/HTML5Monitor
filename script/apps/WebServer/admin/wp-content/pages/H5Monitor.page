@@ -61,15 +61,15 @@ if(is_ajax()) then
 -- client side,
 	add_action('wp_ajax_monitor_client_ping_status',function()
 		local pingStatus = H5MonitorClient.GetHandleMsg();
-		wp_send_json(pingStatus);
+		wp_send_json(pingStatus, true);
 	end)
+
 -- server side, 
 	add_action('wp_ajax_monitor_server_start', function()
 		local ip, port = GetClient();
 		H5MonitorServer.Start(tostring(ip),tostring(port));
 		H5MonitorServer.Ping();
 	end)
-
 
 -- server side,
 	add_action('wp_ajax_monitor_show_large_screen_shot', function()
@@ -83,7 +83,6 @@ if(is_ajax()) then
 		local msgQueue = H5MonitorServer.SortMsgQueue();
 		local largeScreenShotData = msgQueue[index + 1];
 		local largeScreenShot = {largeScreenShotData = largeScreenShotData}
-		--wp_send_json(largeScreenShot,true);
 		H5MonitorServer.ClearMsgQueue();
 		wp_send_json(largeScreenShot, true);
 	end)
