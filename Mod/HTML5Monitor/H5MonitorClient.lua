@@ -52,6 +52,7 @@ function H5MonitorClient.Callback()
 end
 
 function H5MonitorClient.Stop()
+	
 end
 
 function H5MonitorClient.Send(msg,is_first)
@@ -120,16 +121,15 @@ end
 
 -- test if connected after connecting before sending
 function H5MonitorClient.Ping() 
-	local clientPingTimer;
-	clientPingTimer = commonlib.Timer:new({callbackFunc = function(timer)
+	H5MonitorClient.clientPingTimer = commonlib.Timer:new({callbackFunc = function(timer)
 		local clientStatus = H5MonitorClient.GetHandleMsg();
 		H5MonitorClient.Send({ping = true});
 		--LOG.std(nil, "info","client status","client ping status: %s" ,tostring(clientStatus.pingSuccess));
 		if(clientStatus.pingSuccess) then
-			clientPingTimer:Change();
+			H5MonitorClient.clientPingTimer:Change();
 		end
 	end})
-	clientPingTimer:Change(0, 100);
+	H5MonitorClient.clientPingTimer:Change(0, 100);
 end
 
 local function activate()

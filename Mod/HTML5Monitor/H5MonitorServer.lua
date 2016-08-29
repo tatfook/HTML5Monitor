@@ -71,7 +71,7 @@ function H5MonitorServer.Start(host,port)
 end
 
 function H5MonitorServer.Stop()
-
+	
 end
 
 -- send msg to specific client
