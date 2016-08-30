@@ -118,7 +118,7 @@ function H5MonitorClient.GetScreenShot()
 end
 
 -- client side, when get screenShot info from server, send screenShotData to server
--- now send msg timer is 750 ms, it can be reset.
+-- now send msg timer is 600 ms, it can be reset.
 -- connection test timer is set to 20000 ms
 function H5MonitorClient.Response()
 	if(H5MonitorClient.clientSendTimer) then return end;
@@ -126,7 +126,7 @@ function H5MonitorClient.Response()
 			local screenShotData = H5MonitorClient.GetScreenShot();
 			H5MonitorClient.sendStatus = H5MonitorClient.Send(screenShotData);
 	end})
-	H5MonitorClient.clientSendTimer:Change(0,750);
+	H5MonitorClient.clientSendTimer:Change(0,600);
 	H5MonitorClient.connectionTimer = commonlib.Timer:new({callbackFunc = function(timer)
 		--LOG.std(nil, "info", "H5MonitorClient", "ping connection");
 		H5MonitorClient.handle_msgs = {};
