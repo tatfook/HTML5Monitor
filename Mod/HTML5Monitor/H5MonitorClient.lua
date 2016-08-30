@@ -19,12 +19,23 @@ local client_file = "Mod/HTML5Monitor/H5MonitorClient.lua";
 local server_file = "Mod/HTML5Monitor/H5MonitorServer.lua";
 local filepath = "temp/monitor_screenshot.png";
 H5MonitorClient.handle_msgs = nil;
-local nid = "stu1";
 
 function H5MonitorClient.AddPublicFiles()
     NPL.AddPublicFile(client_file, 7001);
     NPL.AddPublicFile(server_file, 7002);
 end
+
+-- closure to connect the server again.
+function H5MonitorClient.GetNid()
+	local i = 0
+	return function()
+		i = i + 1;
+		local nid = "stu" .. i
+		return nid;
+	end
+end
+local getnid = H5MonitorClient.GetNid();
+local nid;
 
 -- connect a server
 function H5MonitorClient.Start(host,port)
@@ -35,6 +46,7 @@ function H5MonitorClient.Start(host,port)
 	
 	host = tostring(host);
 	port = tostring(port);
+	nid = getnid();
 	local params = {host = host, port = port, nid = nid};
 	NPL.AddNPLRuntimeAddress(params);
 	H5MonitorClient.Send({},true);
@@ -96,7 +108,7 @@ function H5MonitorClient.GetScreenShotInfo()
 			height = serverMsgs.height;
 		end
 	end
-	LOG.std(nil, "info","client GetScreenShotInfo", "width:%s, height:%s ", width, height);
+	--LOG.std(nil, "info","client GetScreenShotInfo", "width:%s, height:%s ", width, height);
 	return width, height;
 end
 
