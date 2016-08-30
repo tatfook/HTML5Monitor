@@ -65,9 +65,9 @@ function H5MonitorServer.Start(host,port)
 	local params = {host = host, port = port, nid = nid};
 	-- add the server address
 	NPL.AddNPLRuntimeAddress(params);
-	H5MonitorServer.Send({},true)
+	H5MonitorServer.Send({})
 	LOG.std(nil, "info", "H5MonitorServer", "Connect host:%s port:%s",host,port);
-	H5MonitorServer.handle_msgs = { server_started = true };
+	--H5MonitorServer.handle_msgs = { server_started = true };
 end
 
 function H5MonitorServer.Stop()
@@ -78,7 +78,7 @@ end
 function H5MonitorServer.Send(msg, usernid)
 	local nid = usernid or msg.nid or msg.tid or nid;
 	local res = NPL.activate(string.format("%s:%s", nid, client_file), msg);
-	--LOG.std(nil, "info", "H5MonitorServer", "res:%s",tostring(res));
+	LOG.std(nil, "info", "H5MonitorServer", "res:%s",tostring(res));
 	return res;
 end
 
@@ -103,7 +103,7 @@ function H5MonitorServer.SetScreenShotInfo(is_large, usernid)
 		height = 400; 
 	end
 	local screenShotInfo = {width = width, height = height};
-	--LOG.std(nil, "info", "server SetScreenShotInfo" ,"width:%s, height: %s", width, height);
+	LOG.std(nil, "info", "server SetScreenShotInfo" ,"width:%s, height: %s", width, height);
 	H5MonitorServer.Send(screenShotInfo, usernid);
 end
 
@@ -174,22 +174,21 @@ end
 
 -- test if connected after connecting before sending
 function H5MonitorServer.Ping()
-	local serverPingTimer; 
-	serverPingTimer = commonlib.Timer:new({callbackFunc = function(timer)
-		local serverStatus = H5MonitorServer.GetHandleMsg();
+	H5MonitorServer.serverPingTimer = commonlib.Timer:new({callbackFunc = function(timer)
 		H5MonitorServer.Send({ping = true});
-		--LOG.std(nil, "info","server status", "server ping status: %s" ,tostring(serverStatus.pingSuccess));
+		local serverStatus = H5MonitorServer.GetHandleMsg();
+		--LOG.std(nil, "info","server status", "server ping status:" ,tostring(serverStatus));
 		if(serverStatus) then
 			if(serverStatus.pingSuccess) then
-				serverPingTimer:Change();
+				H5MonitorServer.serverPingTimer:Change();
 			end
 		else
 			commonlib.TimerManager.SetTimeout(function()
-				serverPingTimer:Change();
+				H5MonitorServer.serverPingTimer:Change();
 			end, 1000);
 		end
 	end})
-	serverPingTimer:Change(0, 100);
+	H5MonitorServer.serverPingTimer:Change(0, 100);
 end
 
 -- main function
@@ -214,10 +213,10 @@ local function activate()
 			H5MonitorServer.GetMsgQueue(msg, msgIP);
 		elseif(msg.ping) then
 			H5MonitorServer.Send({pingSuccess = true}, H5MonitorServer.nidQueue[H5MonitorServer.handle_msgsIP]);
-			LOG.std(nil, "info","server", "client ping status: %s" ,tostring(msg.ping));
+			--LOG.std(nil, "info","server", "client ping status:%s" ,tostring(msg.ping));
 		elseif(msg.pingSuccess) then
 			H5MonitorServer.SetScreenShotInfo();
-			--LOG.std(nil, "info"," server ", "client pingSuccess status: %s" ,tostring(msg.pingSuccess));
+			--LOG.std(nil, "info","server", "client pingSuccess:%s" ,tostring(msg.pingSuccess));
 		end
 	end	
 end
