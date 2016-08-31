@@ -32,17 +32,17 @@ local tonumber = tonumber;
 -- can use client side to connect with the specific server
 local function GetServer()
 	local server = request:get("server");
-	local ip = string.match(server,"^(.*):.*$");	
-	local port = string.match(server,"^.*:(.*)$");	
+	local ip = string.match(server,"^(.*):.*$") or server;	
+	local port = string.match(server,"^.*:(.*)$") or 8099;	
 	--LOG.std(nil, "info","serverInfo" ,"ip:%s, port: %s", ip, port);
 	return ip, port;
 end
 
 -- can use server side to connect with the specific client
 local function GetClient()
-	local client = request:get("client")
-	local ip = string.match(client, "^(.*):.*$");
-	local port = string.match(client,"^.*:(.*)$");	
+	local client = request:get("client");
+	local ip = string.match(client, "^(.*):.*$") or server;
+	local port = string.match(client,"^.*:(.*)$") or 8099;	
 	--LOG.std(nil, "info", "clientInfo","ip:%s, port: %s", ip, port);
 	return ip, port;
 end
