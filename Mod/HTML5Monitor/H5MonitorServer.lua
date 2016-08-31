@@ -33,21 +33,25 @@ H5MonitorServer.tempIPQueue = {};
 H5MonitorServer.ipQueue = {};
 H5MonitorServer.nidQueue = {};
 
+-- in milliseconds
+local max_server_ping_timeout = 1000;
+-- in milliseconds
+local server_ping_interval = 100;
+
 function H5MonitorServer.AddPublicFiles()
     NPL.AddPublicFile(client_file, 7001);
     NPL.AddPublicFile(server_file, 7002);
 end
 
+local i = 0;
 -- clousre to make an unique nid for each connected client
 function H5MonitorServer.GetNid()
-	local i = 0
-	return function()
-		i = i + 1;
-		local nid = "student" .. i
-		return nid;
-	end
+	i = i + 1;
+	local nid = "student" .. i
+	return nid;
 end
-local getnid = H5MonitorServer.GetNid();
+local getnid = H5MonitorServer.GetNid;
+
 local nid;
 
 -- connect a client 
@@ -143,8 +147,8 @@ function H5MonitorServer.SortTempIPQueue()
 		temp[value] = key;
 	end
 	table.sort(H5MonitorServer.tempIPQueue, function(v1, v2)
-		local k1 = assert(temp[v1]);
-		local k2 = assert(temp[v2]);
+		local k1 = temp[v1];
+		local k2 = temp[v2];
 		return k1 < k2;
 	end)
 	return H5MonitorServer.tempIPQueue;
@@ -185,10 +189,20 @@ function H5MonitorServer.Ping()
 		else
 			commonlib.TimerManager.SetTimeout(function()
 				H5MonitorServer.serverPingTimer:Change();
-			end, 1000);
+			end, max_server_ping_timeout);
 		end
 	end})
-	H5MonitorServer.serverPingTimer:Change(0, 100);
+	H5MonitorServer.serverPingTimer:Change(0, server_ping_interval);
+end
+
+function H5MonitorServer.handle_screenShotData(msg)
+end
+
+function H5MonitorServer.handle_ping(msg)
+end
+
+function H5MonitorServer.handle_pingSuccess(msg)
+
 end
 
 -- main function
@@ -208,7 +222,10 @@ local function activate()
 			end
 			H5MonitorServer.GetNidQueue(ip, nid);
 		end
-		if(msg.screenShotData) then
+		local handler = H5MonitorServer["handler_"..(msg.cmd or "")];
+		if(handler) then
+			handler(msg);
+		elseif(msg.screenShotData) then
 			local msgIP = H5MonitorServer.GetIP() or H5MonitorServer.clientIP;
 			H5MonitorServer.GetMsgQueue(msg, msgIP);
 		elseif(msg.ping) then
