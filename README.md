@@ -49,3 +49,6 @@ Enter client IP such as `192.168.0.110` in the local area, and then press `CONNE
 If you see the figure below in server side, it means that you have used the App successfully.
 ![Success](https://github.com/tatfook/HTML5Monitor/raw/master/Image/Success.png)   
 
+If you click the image of the client screenshot, it will popup a big dialog with more clear screen shot like below.
+
+![](https://github.com/tatfook/HTML5Monitor/raw/master/Image/largeScreenShot.png)
